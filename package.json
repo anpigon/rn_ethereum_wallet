@@ -1,0 +1,29 @@
+{
+  "name": "rn_ethereum_wallet",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "bip32": "^1.0.2",
+    "bip39": "^2.5.0",
+    "ethers": "^4.0.23",
+    "native-base": "^2.11.0",
+    "react": "16.6.3",
+    "react-native": "0.58.3",
+    "react-native-gesture-handler": "^1.0.15",
+    "react-navigation": "^3.0.9"
+  },
+  "devDependencies": {
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "24.0.0",
+    "jest": "24.0.0",
+    "metro-react-native-babel-preset": "0.51.1",
+    "react-test-renderer": "16.6.3"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
