@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Container, Content, Segment, Text, Icon, Button, Header, Left, Body, Title, Right, Form, Textarea, Input, Item } from 'native-base'; 
+import { Container, Content, Text, Button, Form, Textarea } from 'native-base'; 
 
-import bip39 from 'bip39';
-import bip32 from 'bip32';
-import { randomBytes } from 'react-native-randombytes';
+// import bip39 from 'bip39';
+// import bip32 from 'bip32';
+// import { randomBytes } from 'react-native-randombytes';
 
 export default class CreateWalletScreen extends Component {
   static navigationOptions = {
@@ -19,30 +19,34 @@ export default class CreateWalletScreen extends Component {
 		}
 	}
 
-	componentWillMount = () => {
-		// 시드 생성
-		randomBytes(32, (error, seed) => {
-			if(error) {
-				console.log(error);
-				return;
-			}
-			// console.log('seed', seed);			
-			// 니모닉 생성
-			const mnemonic = bip39.entropyToMnemonic(seed, bip39.wordlists.EN);
-			// console.log('mnemonic', mnemonic);
-			this.setState({ mnemonic });
-		});
-	}
+	// componentWillMount = () => {
+	// 	// 시드 생성
+	// 	randomBytes(32, (error, seed) => {
+	// 		if(error) {
+	// 			console.log(error);
+	// 			return;
+	// 		}
+	// 		// console.log('seed', seed);			
+	// 		// 니모닉 생성
+	// 		const mnemonic = bip39.entropyToMnemonic(seed, bip39.wordlists.EN);
+	// 		// console.log('mnemonic', mnemonic);
+	// 		this.setState({ mnemonic });
+	// 	});
+	// }
 
-	_createWallets = async () => {
-		const seed = bip39.mnemonicToSeed(this.state.mnemonic);
-		// 마스터 키 생성
-		const root = bip32.fromSeed(seed);
-		// 이더리움 차일드 개인키 생성
-		const xPrivateKey = root.derivePath("m/44'/60'/0'/0/0");
-		const privateKe = xPrivateKey.privateKey.toString('hex');
-		const publicKey = xPrivateKey.publicKey.toString('hex');
-	}
+	// _createWallets = async () => {
+	// 	const seed = bip39.mnemonicToSeed(this.state.mnemonic);
+	// 	// 마스터 키 생성
+	// 	const root = bip32.fromSeed(seed);
+	// 	// 이더리움 차일드 개인키 생성
+	// 	const xPrivateKey = root.derivePath("m/44'/60'/0'/0/0");
+	// 	const privateKe = xPrivateKey.privateKey.toString('hex');
+	// 	const publicKey = xPrivateKey.publicKey.toString('hex');
+	// 	console.log({
+	// 		privateKe,
+	// 		publicKey
+	// 	})
+	// }
 
   render() {
     return (
