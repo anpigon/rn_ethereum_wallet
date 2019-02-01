@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Clipboard } from 'react-native';
 import { Container, Content, Text, Button, Form, Textarea, Toast } from 'native-base'; 
 
-import bip39 from 'bip39';
+import bip39 from 'react-native-bip39';
 // import bip32 from 'bip32';
 import { randomBytes } from 'react-native-randombytes';
 
@@ -20,16 +20,11 @@ export default class CreateWalletScreen extends Component {
 	}
 
 	componentWillMount = () => {
-		// 시드 생성
-		randomBytes(32, (error, seed) => {
-			if(error) {
-				console.log(error);
-				return;
-			}
 			// 니모닉 생성
-			const mnemonic = bip39.entropyToMnemonic(seed, bip39.wordlists.EN);
-			this.setState({ mnemonic });
-		});
+			bip39.generateMnemonic()
+				.then(mnemonic => {
+					this.setState({ mnemonic })
+				});
 	}
 
 	// _createWallets = async () => {

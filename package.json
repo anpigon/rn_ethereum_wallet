@@ -12,7 +12,6 @@
   "dependencies": {
     "assert": "^1.4.1",
     "bip32": "^1.0.2",
-    "bip39": "^2.5.0",
     "buffer": "^4.9.1",
     "ethers": "^4.0.23",
     "events": "^1.1.1",
@@ -20,6 +19,7 @@
     "process": "^0.11.10",
     "react": "16.6.3",
     "react-native": "0.58.3",
+    "react-native-bip39": "^2.3.0",
     "react-native-crypto": "^2.1.2",
     "react-native-gesture-handler": "^1.0.15",
     "react-native-randombytes": "^3.5.2",
