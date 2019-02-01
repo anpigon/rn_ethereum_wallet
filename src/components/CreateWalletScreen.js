@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Container, Content, Text, Button, Form, Textarea } from 'native-base'; 
+import { StyleSheet, View, Clipboard } from 'react-native';
+import { Container, Content, Text, Button, Form, Textarea, Toast } from 'native-base'; 
 
-// import bip39 from 'bip39';
+import bip39 from 'bip39';
 // import bip32 from 'bip32';
-// import { randomBytes } from 'react-native-randombytes';
+import { randomBytes } from 'react-native-randombytes';
 
 export default class CreateWalletScreen extends Component {
   static navigationOptions = {
@@ -19,20 +19,18 @@ export default class CreateWalletScreen extends Component {
 		}
 	}
 
-	// componentWillMount = () => {
-	// 	// 시드 생성
-	// 	randomBytes(32, (error, seed) => {
-	// 		if(error) {
-	// 			console.log(error);
-	// 			return;
-	// 		}
-	// 		// console.log('seed', seed);			
-	// 		// 니모닉 생성
-	// 		const mnemonic = bip39.entropyToMnemonic(seed, bip39.wordlists.EN);
-	// 		// console.log('mnemonic', mnemonic);
-	// 		this.setState({ mnemonic });
-	// 	});
-	// }
+	componentWillMount = () => {
+		// 시드 생성
+		randomBytes(32, (error, seed) => {
+			if(error) {
+				console.log(error);
+				return;
+			}
+			// 니모닉 생성
+			const mnemonic = bip39.entropyToMnemonic(seed, bip39.wordlists.EN);
+			this.setState({ mnemonic });
+		});
+	}
 
 	// _createWallets = async () => {
 	// 	const seed = bip39.mnemonicToSeed(this.state.mnemonic);
@@ -55,7 +53,8 @@ export default class CreateWalletScreen extends Component {
 					<View style={{ flex: 1 }}>
 						<Text note>아래 12개 니모닉을 복사하여 백업하세요. 지갑을 복구하는데 매우 중요한 데이터입니다.</Text>
 						<Form>
-							<Textarea rowSpan={5} bordered disabled />
+							<Textarea rowSpan={5} bordered disabled 
+								value={this.state.mnemonic} />
 						</Form>
 					</View>
 					<View style={{ flex: 1 }}>
