@@ -1,31 +1,44 @@
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, AsyncStorage } from 'react-native';
 import { Container, Content, Card, CardItem, Body, Text, Icon, Button } from 'native-base'; 
+
+import { NavigationEvents } from 'react-navigation';
 
 export default class WalletsScreen extends Component {
   static navigationOptions = {
     // headerLeft: null,
 		title: "Ethereum Wallet",
 		// headerRight: null
-  }
+	}
+
+	_onWillFocus = payload => {
+		AsyncStorage.getItem('WALLETS').then(wallets => {
+			console.log(wallets);
+		});
+	}
 
   render() {
     return (
-			<Container style={styles.container}>
-        <Content padder>
-					<Card>
-						<CardItem>
-							<Body>
-									<Button transparent iconLeft large block
-										onPress={() => this.props.navigation.navigate('CreateWallet')}>
-										<Icon name='ios-add-circle-outline' />
-										<Text>지갑 생성</Text>
-									</Button>
-							</Body>
-						</CardItem>
-					</Card>
-        </Content>
-      </Container>
+			<>
+				<NavigationEvents
+					onWillFocus={this._onWillFocus}
+				/>
+				<Container style={styles.container}>
+					<Content padder>
+						<Card>
+							<CardItem>
+								<Body>
+										<Button transparent iconLeft large block
+											onPress={() => this.props.navigation.navigate('CreateWallet')}>
+											<Icon name='ios-add-circle-outline' />
+											<Text>지갑 생성</Text>
+										</Button>
+								</Body>
+							</CardItem>
+						</Card>
+					</Content>
+				</Container>
+			</>
 		);
   }
 }

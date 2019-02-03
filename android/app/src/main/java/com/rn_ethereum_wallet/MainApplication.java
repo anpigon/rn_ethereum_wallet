@@ -3,6 +3,7 @@ package com.rn_ethereum_wallet;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactlibrary.securekeystore.RNSecureKeyStorePackage;
 import com.tradle.react.UdpSocketsModule;
 import com.peel.react.TcpSocketsModule;
 import com.peel.react.rnos.RNOSModule;
@@ -28,6 +29,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNSecureKeyStorePackage(),
             new UdpSocketsModule(),
             new TcpSocketsModule(),
             new RNOSModule(),
