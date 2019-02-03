@@ -3,8 +3,8 @@ import { StyleSheet, View, Clipboard } from 'react-native';
 import { Container, Content, Text, Button, Form, Textarea, Toast } from 'native-base'; 
 
 import bip39 from 'react-native-bip39';
-// import bip32 from 'bip32';
-import { randomBytes } from 'react-native-randombytes';
+import bip32 from 'bip32';
+import ethUtil from 'ethereumjs-util';
 
 export default class CreateWalletScreen extends Component {
   static navigationOptions = {
@@ -20,26 +20,29 @@ export default class CreateWalletScreen extends Component {
 	}
 
 	componentWillMount = () => {
-			// 니모닉 생성
-			bip39.generateMnemonic()
-				.then(mnemonic => {
-					this.setState({ mnemonic })
-				});
+		// 니모닉 생성
+		bip39.generateMnemonic()
+		.then(mnemonic => {
+			this.setState({ mnemonic })
+		});
 	}
 
-	// _createWallets = async () => {
-	// 	const seed = bip39.mnemonicToSeed(this.state.mnemonic);
-	// 	// 마스터 키 생성
-	// 	const root = bip32.fromSeed(seed);
-	// 	// 이더리움 차일드 개인키 생성
-	// 	const xPrivateKey = root.derivePath("m/44'/60'/0'/0/0");
-	// 	const privateKe = xPrivateKey.privateKey.toString('hex');
-	// 	const publicKey = xPrivateKey.publicKey.toString('hex');
-	// 	console.log({
-	// 		privateKe,
-	// 		publicKey
-	// 	})
-	// }
+	createWallet = () => {
+		const seed = bip39.mnemonicToSeed(this.state.mnemonic);
+		// 마스터 키 생성
+		const root = bip32.fromSeed(seed);
+		// 이더리움 차일드 개인키 생성
+		const xPrivateKey = root.derivePath("m/44'/60'/0'/0/0");
+		const privateKe = xPrivateKey.privateKey.toString('hex');
+		const publicKey = xPrivateKey.publicKey;
+		let address = ethUtil.pubToAddress(publicKey, true).toString('hex');
+		address = ethUtil.toChecksumAddress(address).toString('hex');
+		console.log({
+			privateKe,
+			publicKey,
+			address
+		})
+	}
 
   render() {
     return (
@@ -53,7 +56,8 @@ export default class CreateWalletScreen extends Component {
 						</Form>
 					</View>
 					<View style={{ flex: 1 }}>
-						<Button block primary>
+						<Button block primary
+							onPress={() => this.createWallet()}>
 							<Text>생성하기</Text>
 						</Button>
 					</View>
