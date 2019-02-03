@@ -32,16 +32,22 @@ export default class CreateWalletScreen extends Component {
 		// 마스터 키 생성
 		const root = bip32.fromSeed(seed);
 		// 이더리움 차일드 개인키 생성
-		const xPrivateKey = root.derivePath("m/44'/60'/0'/0/0");
-		const privateKe = xPrivateKey.privateKey.toString('hex');
-		const publicKey = xPrivateKey.publicKey;
-		let address = ethUtil.pubToAddress(publicKey, true).toString('hex');
+		const xPrivKey = root.derivePath("m/44'/60'/0'/0/0");
+		const privKey = xPrivKey.privateKey.toString('hex');
+		// 이더리움 주소 생성
+		let address = ethUtil.pubToAddress(xPrivKey.publicKey, true).toString('hex');
 		address = ethUtil.toChecksumAddress(address).toString('hex');
 		console.log({
-			privateKe,
-			publicKey,
+			privKey,
+			// publicKey,
 			address
 		})
+
+		// const k = root.derivePath("m/44'/60'/0'");
+		// console.log('k',k.toBase58());
+		// console.log('k',k.toWIF());
+		// console.log('k',bip32.fromBase58(k.toBase58()));
+		// console.log(k.derive(0).derive(0).privateKey.toString('hex'));
 	}
 
   render() {
