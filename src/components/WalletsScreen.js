@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, AsyncStorage } from 'react-native';
-import { Container, Content, Card, CardItem, Body, Text, Icon, Button } from 'native-base'; 
+import { Container, Content, Card, CardItem, Body, Text, Icon, Button, Left, Right, Thumbnail } from 'native-base'; 
+
+import WalletComponent from './WalletComponent';
 
 import { NavigationEvents } from 'react-navigation';
 
@@ -11,9 +13,22 @@ export default class WalletsScreen extends Component {
 		// headerRight: null
 	}
 
+	constructor(props) {
+		super(props);
+		this.state = {
+			wallets: []
+		}
+	}
+
+	componentWillMount() {
+		// AsyncStorage.removeItem('WALLETS');
+	}
+
 	_onWillFocus = payload => {
 		AsyncStorage.getItem('WALLETS').then(wallets => {
-			console.log(wallets);
+			this.setState({
+				wallets: JSON.parse(wallets) || [],
+			})
 		});
 	}
 
@@ -25,6 +40,9 @@ export default class WalletsScreen extends Component {
 				/>
 				<Container style={styles.container}>
 					<Content padder>
+						{
+							this.state.wallets.map(wallet => <WalletComponent wallet={wallet} />)
+						}
 						<Card>
 							<CardItem>
 								<Body>
