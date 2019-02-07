@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, AsyncStorage } from 'react-native';
 import { Container, Content, Header, Card, CardItem, Body, Text, Icon, Button, Left, Right, Thumbnail, Title, List, ListItem } from 'native-base'; 
 
-export default class WalletsScreen extends Component {
+export default class WalletInfoScreen extends Component {
   static navigationOptions = {
     header: null
 	}
