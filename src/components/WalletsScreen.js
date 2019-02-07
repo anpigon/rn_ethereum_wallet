@@ -41,7 +41,14 @@ export default class WalletsScreen extends Component {
 				<Container style={styles.container}>
 					<Content padder>
 						{
-							this.state.wallets.map(wallet => <WalletComponent wallet={wallet} />)
+							this.state.wallets.map((wallet) => {
+                return (
+									<WalletComponent 
+										key={wallet.address}
+										wallet={wallet} 
+										onPress={() => this.props.navigation.navigate('WalletInfo', wallet)} />
+								)
+              })
 						}
 						<Card>
 							<CardItem>

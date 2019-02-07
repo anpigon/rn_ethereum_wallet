@@ -1,9 +1,12 @@
 import React from 'react';
+import { TouchableOpacity } from 'react-native';
 import { Card, CardItem, Body, Text, Icon, Button, Left, Right, Thumbnail } from 'native-base'; 
 
 export default function WalletComponent(props) {
+	// console.log(props);
 	const wallet = props.wallet;
 	return (
+		<TouchableOpacity  onPress={props.onPress}>
 		<Card>
 			<CardItem>
 				<Left>
@@ -31,5 +34,6 @@ export default function WalletComponent(props) {
 				</Body>
 			</CardItem>
 		</Card>
+		</TouchableOpacity>
 	);
 }

@@ -2,9 +2,13 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
 import WalletsScreen from './components/WalletsScreen';
 import CreateWalletScreen from './components/CreateWalletScreen';
 
+
+import WalletInfoScreen from './components/WalletInfoScreen';
+
 const AppStackNavigator = createStackNavigator({
-	Wallets: { screen: WalletsScreen },
+  Wallets: { screen: WalletsScreen },
 	CreateWallet: { screen: CreateWalletScreen },
+  WalletInfo: { screen: WalletInfoScreen },
 }, 
 {
   defaultNavigationOptions: {
