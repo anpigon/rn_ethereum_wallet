@@ -23,6 +23,7 @@
     "react-native-bip39": "^2.3.0",
     "react-native-crypto": "^2.1.2",
     "react-native-gesture-handler": "^1.0.15",
+    "react-native-qrcode": "^0.2.7",
     "react-native-qrcode-svg": "^5.1.2",
     "react-native-randombytes": "^3.5.2",
     "react-native-secure-key-store": "^2.0.0",

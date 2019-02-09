@@ -6,7 +6,7 @@ export default function WalletComponent(props) {
 	// console.log(props);
 	const wallet = props.wallet;
 	return (
-		<TouchableOpacity  onPress={props.onPress}>
+		<TouchableOpacity onPress={props.onPress}>
 			<Card>
 				<CardItem>
 					<Left>
