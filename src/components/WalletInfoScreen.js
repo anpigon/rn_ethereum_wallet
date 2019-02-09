@@ -35,7 +35,7 @@ export default class WalletInfoScreen extends Component {
           <Card transparent>
             <CardItem>
               <Body style={ styles.center }>
-                <Thumbnail source={{uri: 'https://s2.coinmarketcap.com/static/img/coins/32x32/1027.png'}} />  
+                <Thumbnail source={{uri: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png'}} />  
               </Body>
             </CardItem>
             <CardItem>
