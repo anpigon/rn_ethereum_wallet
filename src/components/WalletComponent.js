@@ -26,7 +26,7 @@ export default function WalletComponent(props) {
 				<CardItem>
 					<Body style={{ alignItems:'flex-end' }}>
 						<Text>
-							{wallet.balance || '0.00'}
+							{wallet.balance || '0.00'} {wallet.symbol}
 						</Text>
 						<Text note style={{ marginRight:0 }}>
 							≈ ￦ {wallet.convertPrice || '0.00'}
