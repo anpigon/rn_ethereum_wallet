@@ -5,8 +5,10 @@ import WalletsScreen from './components/WalletsScreen';
 import CreateWalletScreen from './components/CreateWalletScreen';
 import WalletInfoScreen from './components/WalletInfoScreen';
 import ReceiveScreen from './components/ReceiveScreen';
+import SendScreen from './components/SendScreen';
 
 const AppStackNavigator = createStackNavigator({
+  SendScreen: { screen: SendScreen },
   Wallets: { screen: WalletsScreen },
 	CreateWallet: { screen: CreateWalletScreen },
   WalletInfo: { screen: WalletInfoScreen },
