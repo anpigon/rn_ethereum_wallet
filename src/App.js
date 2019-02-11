@@ -8,11 +8,11 @@ import ReceiveScreen from './components/ReceiveScreen';
 import SendScreen from './components/SendScreen';
 
 const AppStackNavigator = createStackNavigator({
-  SendScreen: { screen: SendScreen },
   Wallets: { screen: WalletsScreen },
 	CreateWallet: { screen: CreateWalletScreen },
   WalletInfo: { screen: WalletInfoScreen },
   ReceiveScreen: { screen: ReceiveScreen },
+  SendScreen: { screen: SendScreen },
 }, 
 {
   defaultNavigationOptions: {
