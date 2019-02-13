@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Slider, TouchableOpacity } from 'react-native';
 import { Container, Content, Header, Card, CardItem, Body, Text, Icon, Button, Left, Right, Thumbnail, Title, Toast, Form, Item, Input, Label } from 'native-base'; 
-import QRCode from 'react-native-qrcode';
 
 export default class ReceiveScreen extends Component {
   static navigationOptions = {
