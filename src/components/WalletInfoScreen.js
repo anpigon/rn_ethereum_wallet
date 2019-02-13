@@ -60,7 +60,9 @@ export default class WalletInfoScreen extends Component {
                 <Button 
                   onPress={() => this.props.navigation.navigate('ReceiveScreen', wallet)}
                   bordered info style={{flex:1, justifyContent:'center', marginRight: 10}}><Text>입금</Text></Button>
-                <Button bordered warning style={{flex:1, justifyContent:'center', marginLeft: 10}}><Text>출금</Text></Button>
+                <Button 
+                  onPress={() => this.props.navigation.navigate('SendScreen', wallet)}
+                  bordered warning style={{flex:1, justifyContent:'center', marginLeft: 10}}><Text>출금</Text></Button>
               </Body>
             </CardItem>
           </Card>
