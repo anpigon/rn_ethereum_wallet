@@ -6,8 +6,11 @@ import CreateWalletScreen from './components/CreateWalletScreen';
 import WalletInfoScreen from './components/WalletInfoScreen';
 import ReceiveScreen from './components/ReceiveScreen';
 import SendScreen from './components/SendScreen';
+import ConfimTxScreen from './components/ConfimTxScreen';
 
 const AppStackNavigator = createStackNavigator({
+  ConfimTx: { screen: ConfimTxScreen },
+
   Wallets: { screen: WalletsScreen },
 	CreateWallet: { screen: CreateWalletScreen },
   WalletInfo: { screen: WalletInfoScreen },

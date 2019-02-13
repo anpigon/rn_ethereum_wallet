@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Slider, TouchableOpacity, Alert } from 'react-native';
 import { Container, Content, Header, Card, CardItem, Body, Text, Icon, Button, Left, Right, Thumbnail, Title, Toast, Form, Item, Input, Label } from 'native-base'; 
-<<<<<<< HEAD
-=======
 import { ethers } from 'ethers';
->>>>>>> 4489a32ff0cb958fe5852efc49509fe58446e61e
 
 export default class ReceiveScreen extends Component {
   static navigationOptions = {
