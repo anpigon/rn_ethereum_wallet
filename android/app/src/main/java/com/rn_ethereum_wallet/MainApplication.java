@@ -3,7 +3,6 @@ package com.rn_ethereum_wallet;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.horcrux.svg.SvgPackage;
 import com.reactlibrary.securekeystore.RNSecureKeyStorePackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -27,7 +26,6 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new SvgPackage(),
             new RNSecureKeyStorePackage(),
             new RandomBytesPackage(),
             new RNGestureHandlerPackage()
