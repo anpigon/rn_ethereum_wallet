@@ -49,11 +49,11 @@ export default class WalletInfoScreen extends Component {
               </Body>
             </CardItem>
             <CardItem>
-              <Body style={ styles.center }>
+              <View>
                 <Text note ellipsizeMode="middle" numberOfLines={1}>
                   {wallet.address}
                 </Text>
-              </Body>
+              </View>
             </CardItem>
             <CardItem>
               <Body style={{ flexDirection: 'row', justifyContent: 'space-around'}}>
