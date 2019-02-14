@@ -134,7 +134,6 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-svg')
     implementation project(':react-native-secure-key-store')
     implementation project(':react-native-randombytes')
     implementation project(':react-native-gesture-handler')
