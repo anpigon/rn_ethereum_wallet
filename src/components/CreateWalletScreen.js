@@ -26,7 +26,7 @@ export default class CreateWalletScreen extends Component {
 		bip39.generateMnemonic()
 		.then(mnemonic => {
 			this.setState({ mnemonic })
-		});
+		}); // ethers.wordlists.en
 	}
 
 	_storeData = async (wallet, privateKey) => {

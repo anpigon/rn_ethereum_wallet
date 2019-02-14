@@ -14,7 +14,7 @@ export default class ReceiveScreen extends Component {
 		const wallet = props.navigation.state.params
 
 		this.state = {
-			fromAddress:'',
+			fromAddress: wallet.address,
 			toAddress:'',
 			gasPrice: '2',
 			gasLimit: '21000',
@@ -28,9 +28,9 @@ export default class ReceiveScreen extends Component {
 		if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
 			return false;
 		}
-		else if (/^(0x|0X)?[0-9a-f]{40}$/.test(address) || /^(0x|0X)?[0-9A-F]{40}$/.test(address)) {
-			return true;
-		}
+		// else if (/^(0x|0X)?[0-9a-f]{40}$/.test(address) || /^(0x|0X)?[0-9A-F]{40}$/.test(address)) {
+		// 	return true;
+		// }
 		return true;
 	};
 
@@ -48,21 +48,41 @@ export default class ReceiveScreen extends Component {
 			// 이체하는데 필요한 총 금액 계산(이체 금액 + 가스비)
 			let totalRequiredAmount = ehter.add(estimateFee);
 
-			if(ehter.lt(totalRequiredAmount)) {
+			let balance = ethers.utils.parseEther(this.state.wallet.balance);
+			console.log('balance' + balance);
+			if(balance.lt(totalRequiredAmount)) {
 				let totalRequiredEther = ethers.utils.formatEther(totalRequiredAmount);
 				return Alert.alert('잔액이 부족합니다.', `수수료 포함하여 필요한 금액\n${totalRequiredEther} ETH`);
 			}
 		} catch(e) {
 			return Alert.alert('이체 금액을 확인해주세요.');
 		}
+
 		try {
-			if(!this.checkAddress(this.toAddress)) {
+			if(!this.checkAddress(this.state.toAddress)) {
 				return Alert.alert('받는 주소를 확인해주세요.');
 			}
 		} catch(e) {
+			console.log(e);
 			return Alert.alert('받는 주소를 확인해주세요.');
 		}
-		Alert.alert('ok');
+		// Alert.alert('ok');
+
+		let {
+			fromAddress,
+			toAddress,
+			gasPrice,
+			gasLimit,
+			value,
+		} = this.state;
+		let transcation = {
+			fromAddress,
+			toAddress,
+			gasPrice,
+			gasLimit,
+			value
+		};
+		this.props.navigation.navigate('ConfimTx', transcation);
 	}
 
 	// componentWillUpdate() {
@@ -92,7 +112,10 @@ export default class ReceiveScreen extends Component {
         </Header>
         <Content padder>
 					<View style={styles.item}>
-						<Text style={styles.label}>이체 금액</Text>
+						<View style={{ alignItems:'baseline', flexDirection: 'row', justifyContent:'space-between'}}>
+							<Text style={styles.label}>이체 금액</Text>
+							<Text note>잔액 {wallet.balance} ETH</Text>
+						</View>
 						<Item last regular style={styles.input}>
 							<Input 
 								keyboardType='numeric'
