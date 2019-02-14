@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Slider, TouchableOpacity, Alert, AsyncStorage, Image } from 'react-native';
+import { StyleSheet, View, Slider, TouchableOpacity, Alert, AsyncStorage, Image, BackHandler } from 'react-native';
 import { Container, Spinner, Content, Header, Card, CardItem, Body, Text, Icon, Button, Left, Right, Thumbnail, Title, Toast, Form, Item, Input, Label } from 'native-base'; 
 // import { ethers } from '../assets/complete.png';
 
-navigationOptions = {
-  // header: null,
-  title: "완료",
-  headerLeft: null,
-  // gesturesEnabled: false,
-}
-
 export default function(props) {
+  // 뒤로 가기 방지
+  // BackHandler.addEventListener('hardwareBackPress', () => {
+  //   props.navigation.popToTop();
+  //   return true
+  // });
+
   const hash = props.navigation.state.params;
   return (
     <Container style={styles.container}>
@@ -28,6 +27,7 @@ export default function(props) {
           onPress={() => { 
             // props.navigation.goBack('WalletInfo');
             // props.navigation.goBack(null);
+            // BackHandler.removeEventListener('hardwareBackPress');
             props.navigation.popToTop();
           }}>
           <Text>확인</Text>

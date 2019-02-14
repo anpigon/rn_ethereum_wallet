@@ -39,7 +39,7 @@ export default class ReceiveScreen extends Component {
 		try {
 			ehter = ethers.utils.parseEther(String(this.state.value || 0));
 			if(ehter.lte(0)) { // 0보다 작으면
-				return Alert.alert('이체 금액을 확인해주세요.');
+				return Alert.alert('', '이체 금액을 확인해주세요.');
 			}
 
 			// 가스비(수수료) 계산 
@@ -55,16 +55,16 @@ export default class ReceiveScreen extends Component {
 				return Alert.alert('잔액이 부족합니다.', `수수료 포함하여 필요한 금액\n${totalRequiredEther} ETH`);
 			}
 		} catch(e) {
-			return Alert.alert('이체 금액을 확인해주세요.');
+			return Alert.alert('', '이체 금액을 확인해주세요.');
 		}
 
 		try {
 			if(!this.checkAddress(this.state.toAddress)) {
-				return Alert.alert('받는 주소를 확인해주세요.');
+				return Alert.alert('', '받는 주소를 확인해주세요.');
 			}
 		} catch(e) {
 			console.log(e);
-			return Alert.alert('받는 주소를 확인해주세요.');
+			return Alert.alert('', '받는 주소를 확인해주세요.');
 		}
 		// Alert.alert('ok');
 

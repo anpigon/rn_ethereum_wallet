@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Slider, TouchableOpacity, Alert, AsyncStorage } from 'react-native';
+import { StyleSheet, View, Slider, TouchableOpacity, Alert, AsyncStorage, BackHandler } from 'react-native';
 import { Container, Spinner, Content, Header, Card, CardItem, Body, Text, Icon, Button, Left, Right, Thumbnail, Title, Toast, Form, Item, Input, Label } from 'native-base'; 
 import { ethers } from 'ethers';
+import Loader from './Loader';
 
 import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
 
@@ -32,6 +33,7 @@ export default class ConfimTxScreen extends Component {
 		totalAmount = ethers.utils.formatEther(totalAmount).toString();
 
 		this.state = {
+			loading: false,
 			fromAddress,
 			toAddress,
 			gasPrice,
@@ -43,6 +45,10 @@ export default class ConfimTxScreen extends Component {
 	}
 
 	sign = async () => {
+
+		this.setState({
+      loading: true
+		});
 
 		let { 
 			fromAddress, 
@@ -71,7 +77,7 @@ export default class ConfimTxScreen extends Component {
 		console.log({ transaction });
 
 		// #4. 키 조회
-		let privateKey = await RNSecureKeyStore.get(wallet.address); // .toString('hex')
+		let privateKey = await RNSecureKeyStore.get(fromAddress); // .toString('hex')
 		console.log({ privateKey });
 
 		// #5. 지갑 생성
@@ -89,12 +95,17 @@ export default class ConfimTxScreen extends Component {
 			console.log('sendTransaction', tx.hash);
 
 			// #8. TxId 화면으로 이동
-			this.props.navigation.navigate('CompleteScreen', tx.hash);
+			// this.props.navigation.navigate('CompleteScreen', tx.hash);
+			this.props.navigation.replace('CompleteScreen', tx.hash);
 
 		} catch(error) {
 			console.log(error);
 			Alert.alert('ERROR', `${error.code}\n${error.message}`);
 		}
+
+		this.setState({
+      loading: false
+		});
 	}
 
   render() {
@@ -135,6 +146,7 @@ export default class ConfimTxScreen extends Component {
 						{/* <Spinner size='small'/> */}
 					</Button>
 				</View>
+				<Loader loading={this.state.loading} />
       </Container>
 		);
   }

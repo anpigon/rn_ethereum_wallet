@@ -45,7 +45,7 @@ export default class ImportWalletScreen extends Component {
   render() {
     return (
 			<Container>
-				<Header hasSegment>
+				<Header hasSegment androidStatusBarColor='black'>
 					<Left>
 						<Button transparent
 							onPress={() => this.props.navigation.goBack()}>
@@ -53,7 +53,7 @@ export default class ImportWalletScreen extends Component {
 						</Button>
 					</Left>
 					<Body>
-						<Title>지갑 생성하기</Title>
+						<Title>지갑 가져오기</Title>
 					</Body>
 					<Right />
 				</Header>
