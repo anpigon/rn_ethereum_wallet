@@ -104,6 +104,7 @@ export default class WalletInfoScreen extends Component {
               </Right>
             </ListItem>
           </List> */}
+          {/* <Button onPress={()=>this.props.navigation.navigate('CompleteScreen', '0xbe67681d642e8ff131a538a6c2f1a2e3a971a9a5633890cde09a7aaec9aebdb2')}><Text>TEST</Text></Button> */}
         </Content>
       </Container>
 		);
