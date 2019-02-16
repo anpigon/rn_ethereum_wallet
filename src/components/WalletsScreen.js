@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, AsyncStorage } from 'react-native';
-import { Container, Content, Card, CardItem, Body, Text, Icon, Button, Left, Right, Thumbnail, Fab, Header, Title } from 'native-base'; 
+import { Container, Content, Card, CardItem, Body, Text, Icon, Button, Left, Right, Thumbnail, Fab, Header, Title, Spinner } from 'native-base'; 
 import { connect } from 'react-redux';
+import { NavigationEvents } from 'react-navigation';
 
 import WalletComponent from './WalletComponent';
-
-import { NavigationEvents } from 'react-navigation';
+import { loadWallets } from '../reducers/walletReducer'
 
 import { ethers } from 'ethers';
 
@@ -26,6 +26,8 @@ class WalletsScreen extends Component {
 	}
 
 	componentWillMount() {
+		// AsyncStorage.removeItem('WALLETS');
+		this.props.loadWallets();
 		// let provider = ethers.getDefaultProvider('ropsten');
 		
 		// const pollingInterval = 20 * 1000;
@@ -63,6 +65,8 @@ class WalletsScreen extends Component {
 	// }
 
   render() {
+		console.log('props', this.props);
+		const { loaded, wallets } = this.props;
     return (
 			<>
 				<NavigationEvents
@@ -72,20 +76,53 @@ class WalletsScreen extends Component {
 				<Container style={styles.container}>
 					<Header noLeft>
 						<Body>
-							<Title>이더리움 지갑</Title>
+							<Title>내 지갑</Title>
 						</Body>
 					</Header>
 					<Content padder>
 						{
-							// this.state.wallets.map((wallet) => {
-							this.props.wallets.map((wallet) => {
-                return (
-									<WalletComponent 
-										key={wallet.address}
-										wallet={wallet} 
-										onPress={() => this.props.navigation.navigate('WalletInfo', wallet)} />
-								)
-              })
+							loaded
+							?
+							(
+								Object.keys(wallets).length
+								?
+								/* 지갑이 있음 */
+								Object.values(wallets).map(wallet => {
+									return (
+										<WalletComponent 
+											key={wallet.address}
+											wallet={wallet} 
+											onPress={() => this.props.navigation.navigate('WalletInfo', wallet)} />
+									)
+								})
+								:
+								<View 
+									style={{marginTop:50, height:300, justifyContent:'space-around', alignItems:'center'}}>
+									<Icon name='google-wallet' type="FontAwesome" style={{ color:'#333', fontSize: 50 }}/>
+									<Text style={{color:'#575757', fontSize:20, marginTop:20, marginBottom: 30}}>여러분의 지갑을 만들어보세요.</Text>
+									<Button
+										first 
+										block
+										bordered
+										style={{width:220, alignSelf:'center'}}
+										onPress={() => {
+											this.props.navigation.navigate('CreateWallet')
+										}}
+									><Text>새 지갑 만들기</Text></Button>
+									<Button
+										last
+										block
+										bordered	
+										style={{width:220, alignSelf:'center'}}
+										onPress={() => {
+											this.props.navigation.navigate('ImportWallet')
+										}}
+									><Text>기존 지갑 가져오기</Text></Button>
+								</View>
+							)
+							:
+							/* 지갑 정보 불러오는 중... */
+							<Spinner color="grey"/>
 						}
 						<View style={{height:75}}/>
 					</Content>
@@ -125,15 +162,16 @@ const styles = StyleSheet.create({
 
 // props에 전달할 state값 정의
 const mapStateToProps = (state) => {
-	const { wallets } = state.wallet;
+	const { loaded, wallets } = state.wallet;
 	return {
+		loaded,
 		wallets
 	}
 };
 
 // props에 전달할 액션 함수 정의
 const mapDispatchToProps = { 
-	// getWallets 
+	loadWallets,
 };
 
 // 컴포넌트와 리덕스를 연결
