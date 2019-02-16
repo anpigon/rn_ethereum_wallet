@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, AsyncStorage } from 'react-native';
 import { Container, Content, Card, CardItem, Body, Text, Icon, Button, Left, Right, Thumbnail, Fab, Header, Title } from 'native-base'; 
+import { connect } from 'react-redux';
 
 import WalletComponent from './WalletComponent';
 
@@ -132,7 +133,7 @@ const mapStateToProps = (state) => {
 
 // props에 전달할 액션 함수 정의
 const mapDispatchToProps = { 
-	getWallets 
+	// getWallets 
 };
 
 // 컴포넌트와 리덕스를 연결
