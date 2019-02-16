@@ -43,12 +43,14 @@ export default class CreateWalletScreen extends Component {
 		// TODO: WALLETS을 Object로 저장하자
 
 		try {
-			const wallets = JSON.parse(await AsyncStorage.getItem('WALLETS')) || [];
-			wallets.push(wallet);
+			let wallets = JSON.parse(await AsyncStorage.getItem('WALLETS')) || {};
+			// wallets.push(wallet);
+			wallets[wallet.address.toLowerCase()] = wallet;
+			console.log('wallets', wallets, JSON.stringify(wallets));
 			await AsyncStorage.setItem('WALLETS', JSON.stringify(wallets));
 			await RNSecureKeyStore.set(wallet.address, privateKey, {accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY});
 
-			// console.log(await AsyncStorage.getItem('WALLETS'));
+			console.log(await AsyncStorage.getItem('WALLETS'));
 			// console.log(await RNSecureKeyStore.get(wallet.address));
 		} catch (error) {
 			// Error saving data
