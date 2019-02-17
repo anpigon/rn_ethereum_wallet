@@ -74,14 +74,14 @@ class WalletsScreen extends Component {
 					onWillBlur={() => this.setState({ active: false })}
 				/>
 				<Container style={styles.container}>
-					<Header>
-						<Left />
+					<Header noLeft>
+						{/* <Left /> */}
 						<Body>
 							<Title>내 지갑</Title>
 						</Body>
 						<Right>
-							<Button transparent icon small dark>
-								<Icon name='settings' type='MaterialCommunityIcons' style={{color:'#575757'}}/>
+							<Button transparent icon small>
+								<Icon name='settings' type='MaterialCommunityIcons'/>
 							</Button>
 						</Right>
 					</Header>
