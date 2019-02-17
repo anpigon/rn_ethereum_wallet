@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, AsyncStorage, Clipboard, Platform } from 'react-native';
-import { Container, Content, Text, Button, Form, Textarea, Toast, Icon, Header, Left, Body, Title, Right } from 'native-base'; 
-import { NavigationActions } from 'react-navigation';
+import { Container, Content, Text, Button, Form, Textarea, Toast } from 'native-base'; 
 
 import bip39 from 'react-native-bip39';
 import bip32 from 'bip32';
@@ -13,9 +12,9 @@ import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
 import Loader from './Loader';
 
 export default class CreateWalletScreen extends Component {
-  // static navigationOptions = {
-	// 	header: null,
-	// }
+  static navigationOptions = {
+		title: '지갑 생성하기'
+	}
 	
 	constructor(props) {
 		super(props);
@@ -28,10 +27,14 @@ export default class CreateWalletScreen extends Component {
 
 	componentWillMount = () => {
 		// 니모닉 생성
+		// bip39.generateMnemonic().then(mnemonic => {
+		// 	this.setState({ mnemonic })
+		// }); 
 		randomBytes(16, (error, bytes) => {
 			const mnemonic = ethers.utils.HDNode.entropyToMnemonic(bytes, ethers.wordlists.en);
 			this.setState({ mnemonic })
 		})
+		// ethers.wordlists.en
 	}
 
 	_storeData = async (wallet, privateKey) => {
@@ -47,7 +50,8 @@ export default class CreateWalletScreen extends Component {
 			await AsyncStorage.setItem('WALLETS', JSON.stringify(wallets));
 			await RNSecureKeyStore.set(wallet.address, privateKey, {accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY});
 
-			// console.log(await AsyncStorage.getItem('WALLETS'));
+			console.log(await AsyncStorage.getItem('WALLETS'));
+			// console.log(await RNSecureKeyStore.get(wallet.address));
 		} catch (error) {
 			// Error saving data
 			console.log(error);
@@ -60,56 +64,24 @@ export default class CreateWalletScreen extends Component {
       loading: true
 		});
 
-		const wallets = {
-			'ETH':{},
-			'BTC':{},
-			'XLM':{}
-		}
+		// let masterNode = HDNode.fromMnemonic(mnemonic);
+		// let standardEthereum = masterNode.derivePath("m/44'/60'/0'/0/0");
+		// let xpriv = node.extendedKey; // Get the extended private key
+		// let xpub = node.neuter().extnededKey; // Get the extended public key
+
 		
 		// 마스터 키 생성
 		const seed = bip39.mnemonicToSeed(this.state.mnemonic);
 		const root = bip32.fromSeed(seed);
-
-		// 비트코인 차일드 개인키 생성
-		((coin='BTC') => {
-			const derivePath = "m/44'/0'/0'/0/0";
-			const xPrivKey = root.derivePath(derivePath);
-			const privKey = xPrivKey.privateKey.toString('hex');
-	
-			// 비트코인 주소 생성
-			let address = '';
-			// let address = ethUtil.pubToAddress(xPrivKey.publicKey, true).toString('hex');
-			// address = ethUtil.toChecksumAddress(address).toString('hex');
-
-			wallets[coin][address] = {
-				name: '비트코인',
-				coin: 'BTC',
-				symbol: 'BTC',
-				address,
-				derivePath,
-			}
-		})();
+		// let root = ethers.utils.HDNode.fromMnemonic(this.state.mnemonic);
 
 		// 이더리움 차일드 개인키 생성
-		((coin='ETH') => {
-			const derivePath = "m/44'/60'/0'/0/0";
-			const xPrivKey = root.derivePath(derivePath);
-			const privKey = xPrivKey.privateKey.toString('hex');
-	
-			// 이더리움 주소 생성
-			let address = ethUtil.pubToAddress(xPrivKey.publicKey, true).toString('hex');
-			address = ethUtil.toChecksumAddress(address).toString('hex');
+		const xPrivKey = root.derivePath("m/44'/60'/0'/0/0");
+		const privKey = xPrivKey.privateKey.toString('hex');
 
-			wallets[coin][address] = {
-				name: '이더리움',
-				coin: 'ETH',
-				symbol: 'ETH',
-				address,
-				derivePath,
-			}
-		})();
-		
-		// 스텔라루멘 키 저장
+		// 이더리움 주소 생성
+		let address = ethUtil.pubToAddress(xPrivKey.publicKey, true).toString('hex');
+		address = ethUtil.toChecksumAddress(address).toString('hex');
 
 		// alert(address);
     const wallet = {
@@ -117,51 +89,32 @@ export default class CreateWalletScreen extends Component {
       coinType: 'ETH',
       symbol: 'ETH',
       address
-		}
+    }
 
-		/*
-			wallets = {
-				'eth': {
-					address': {}
-				},
-				'btc': {
-					address': {}
-				}
-			}
-		*/
-		
-		//
-
-		// 저장(지갑 3개를 동시에 생성하고 redux로 저장하자.)
-		// 니모닉 저장, 이더리움 키저장, 비트코인 키 저장, 스텔라루멘 키 저장
-		// 그리고 앱 상태를 지갑 생성 완료로 변경하자.
+		// 저장
 		await this._storeData(wallet, privKey);
 
+		// this.setState({
+    //   loading: false
+		// });
+		
 		this.setState({
       loading: false
 		});
 
 		// this.props.navigation.goBack();
-		// this.props.navigation.popToTop();
-		// 지갑 생성이 완료되면 현재 화면을 종료하고 지갑 목록 화면으로 이동한다.
-		this.props.navigation.reset([NavigationActions.navigate({ routeName: 'Wallets' })], 0)
+		this.props.navigation.popToTop();;
+		
+		// const k = root.derivePath("m/44'/60'/0'");
+		// console.log('k',k.toBase58());
+		// console.log('k',k.toWIF());
+		// console.log('k',bip32.fromBase58(k.toBase58()));
+		// console.log(k.derive(0).derive(0).privateKey.toString('hex'));
 	}
 
   render() {
     return (
 			<Container style={styles.container}>
-				<Header>
-					<Left>
-						<Button transparent
-							onPress={() => this.props.navigation.goBack()}>
-							<Icon name="arrow-back" />
-						</Button>
-					</Left>
-					<Body>
-						<Title>지갑 만들기</Title>
-					</Body>
-					<Right />
-				</Header>
 				<View style={{ flex: 1, padding: 10, justifyContent: 'space-between'}}>
 					<View>
 						<Text note style={{paddingVertical: 10}}>
@@ -172,7 +125,6 @@ export default class CreateWalletScreen extends Component {
 								style={styles.mnemonic}
 								value={this.state.mnemonic} />
 						</Form>
-						{/* <Button><Text>복사하기</Text></Button> */}
 					</View>
 				</View>
 				<View style={{ marginHorizontal: 10, marginBottom: 30 }}>

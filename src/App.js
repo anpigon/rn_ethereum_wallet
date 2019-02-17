@@ -24,6 +24,7 @@ const AppStackNavigator = createStackNavigator({
 }, 
 {
   defaultNavigationOptions: {
+    header: null,
     headerBackTitle: null, // 뒤로가기 버튼 타이틀 없음.
   },
 });
