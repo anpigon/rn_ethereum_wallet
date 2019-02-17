@@ -23,19 +23,23 @@ export const loadWallets = () => {
 
 // 초기 State를 정의합니다.
 const initialState = {
-	loaded: false,
-  wallets: []
+	loaded: false, 	// 지갑 불러오기 완료 여부
+	walletCount: 0,	// 지갑 갯수
+  wallets: {}			// 지갑 데이터
 }
 
 // 리듀서 함수를 정의합니다.
 export default handleActions({
   [LOADED_WALLETS]: (state, action) => {
+		let loadedWallets = action.payload;
+		let loadedWalletCount = Object.keys(loadedWallets).length;
     return {
 			...state,
 			loaded: true,
+			walletCount: loadedWalletCount,
       wallets: {
         ...state.wallets,
-        ...action.payload
+        ...loadedWallets
 			}
     };
   },
