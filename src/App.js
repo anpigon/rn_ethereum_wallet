@@ -9,10 +9,10 @@ import SendScreen from './components/SendScreen';
 import ConfimTxScreen from './components/ConfimTxScreen';
 import CompleteScreen from './components/CompleteScreen';
 import ImportWalletScreen from './components/ImportWalletScreen';
-import IntroScreen from './components/IntroScreen';
+// import IntroScreen from './components/IntroScreen';
 
 const AppStackNavigator = createStackNavigator({
-  Intro: { screen: IntroScreen,  },
+  // Intro: { screen: IntroScreen,  },
   Wallets: { screen: WalletsScreen,  },
 	CreateWallet: { screen: CreateWalletScreen },
   WalletInfo: { screen: WalletInfoScreen },
