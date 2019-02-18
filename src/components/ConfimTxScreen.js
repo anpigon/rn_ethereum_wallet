@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Slider, TouchableOpacity, Alert, AsyncStorage, BackHandler } from 'react-native';
 import { Container, Spinner, Content, Header, Card, CardItem, Body, Text, Icon, Button, Left, Right, Thumbnail, Title, Toast, Form, Item, Input, Label } from 'native-base'; 
 import { ethers } from 'ethers';
-import Loader from './Loader';
+import LoadingView from './LoadingView';
 
 import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
 
 export default class ConfimTxScreen extends Component {
-  static navigationOptions = {
-    title: "출금",
-	}
+  // static navigationOptions = {
+  //   title: "출금",
+	// }
 
 	constructor(props) {
 		super(props);
@@ -96,7 +96,7 @@ export default class ConfimTxScreen extends Component {
 
 			// #8. TxId 화면으로 이동
 			// this.props.navigation.navigate('CompleteScreen', tx.hash);
-			this.props.navigation.replace('CompleteScreen', tx.hash);
+			this.props.navigation.replace('Complete', tx.hash);
 
 		} catch(error) {
 			console.log(error);
@@ -146,7 +146,7 @@ export default class ConfimTxScreen extends Component {
 						{/* <Spinner size='small'/> */}
 					</Button>
 				</View>
-				<Loader loading={this.state.loading} />
+				<LoadingView loading={this.state.loading} />
       </Container>
 		);
   }

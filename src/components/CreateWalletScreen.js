@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, AsyncStorage, Clipboard, Platform } from 'react-native';
-import { Container, Content, Text, Button, Form, Textarea, Toast, Icon, Header, Left, Body, Title, Right } from 'native-base'; 
+import { Container, Content, Text, Button, Form, Textarea, Toast, Icon, Header, Left, Body, Title, Right, Alert } from 'native-base'; 
 import { NavigationActions } from 'react-navigation';
+import { connect } from 'react-redux';
 
 import bip39 from 'react-native-bip39';
 import bip32 from 'bip32';
@@ -9,10 +10,13 @@ import ethUtil from 'ethereumjs-util';
 import { ethers } from 'ethers';
 import { randomBytes } from 'react-native-randombytes'
 
-import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
-import Loader from './Loader';
+// import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
+import LoadingView from './LoadingView';
 
-export default class CreateWalletScreen extends Component {
+import Wallet from '../model/wallet'
+import { storeWallet } from '../reducers/walletReducer'
+
+class CreateWalletScreen extends Component {
   // static navigationOptions = {
 	// 	header: null,
 	// }
@@ -22,129 +26,89 @@ export default class CreateWalletScreen extends Component {
 
 		this.state = {
 			mnemonic: null,
-			loading: false,
 		}
 	}
 
-	componentWillMount = () => {
+	componentWillMount() {
 		// 니모닉 생성
 		randomBytes(16, (error, bytes) => {
 			const mnemonic = ethers.utils.HDNode.entropyToMnemonic(bytes, ethers.wordlists.en);
 			this.setState({ mnemonic })
 		})
-	}
+  }
+  
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.error) {
+      Alert.alert('에러', nextProps.error.message);
+    } else {
+      // 지갑 생성이 완료되면 현재 화면을 종료하고 지갑 목록 화면으로 이동한다.
+		  this.props.navigation.reset([NavigationActions.navigate({ routeName: 'Wallets' })], 0)
+    }
+  }
 
-	_storeData = async (wallet, privateKey) => {
-		// TODO: secureStorage에 니모닉을 저장하자.
-		// TODO: walletStorage에는 derivePath를 저장하자.
-		// TODO: WALLETS을 Object로 저장하자
+	// _storeData = async (wallet, privateKey) => {
+	// 	// TODO: secureStorage에 니모닉을 저장하자.
+	// 	// TODO: walletStorage에는 derivePath를 저장하자.
+	// 	// TODO: WALLETS을 Object로 저장하자
 
-		try {
-			let wallets = JSON.parse(await AsyncStorage.getItem('WALLETS')) || {};
-			// wallets.push(wallet);
-			wallets[wallet.address.toLowerCase()] = wallet;
-			console.log('wallets', wallets, JSON.stringify(wallets));
-			await AsyncStorage.setItem('WALLETS', JSON.stringify(wallets));
-			await RNSecureKeyStore.set(wallet.address, privateKey, {accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY});
+	// 	try {
+	// 		let wallets = JSON.parse(await AsyncStorage.getItem('WALLETS')) || {};
+	// 		// wallets.push(wallet);
+	// 		wallets[wallet.address.toLowerCase()] = wallet;
+	// 		console.log('wallets', wallets, JSON.stringify(wallets));
+	// 		await AsyncStorage.setItem('WALLETS', JSON.stringify(wallets));
+	// 		await RNSecureKeyStore.set(wallet.address, privateKey, {accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY});
 
-			// console.log(await AsyncStorage.getItem('WALLETS'));
-		} catch (error) {
-			// Error saving data
-			console.log(error);
-		}
-	};
+	// 		// console.log(await AsyncStorage.getItem('WALLETS'));
+	// 	} catch (error) {
+	// 		// Error saving data
+	// 		console.log(error);
+	// 	}
+	// };
 
 	createWallet = async () => {
 
-		this.setState({
-      loading: true
-		});
-
-		const wallets = {
-			'ETH':{},
-			'BTC':{},
-			'XLM':{}
-		}
+		// this.setState({
+    //   loading: true
+		// });
 		
 		// 마스터 키 생성
 		const seed = bip39.mnemonicToSeed(this.state.mnemonic);
 		const root = bip32.fromSeed(seed);
 
-		// 비트코인 차일드 개인키 생성
-		((coin='BTC') => {
-			const derivePath = "m/44'/0'/0'/0/0";
-			const xPrivKey = root.derivePath(derivePath);
-			const privKey = xPrivKey.privateKey.toString('hex');
-	
-			// 비트코인 주소 생성
-			let address = '';
-			// let address = ethUtil.pubToAddress(xPrivKey.publicKey, true).toString('hex');
-			// address = ethUtil.toChecksumAddress(address).toString('hex');
-
-			wallets[coin][address] = {
-				name: '비트코인',
-				coin: 'BTC',
-				symbol: 'BTC',
-				address,
-				derivePath,
-			}
-		})();
-
 		// 이더리움 차일드 개인키 생성
-		((coin='ETH') => {
-			const derivePath = "m/44'/60'/0'/0/0";
-			const xPrivKey = root.derivePath(derivePath);
-			const privKey = xPrivKey.privateKey.toString('hex');
-	
-			// 이더리움 주소 생성
-			let address = ethUtil.pubToAddress(xPrivKey.publicKey, true).toString('hex');
-			address = ethUtil.toChecksumAddress(address).toString('hex');
+    const derivePath = "m/44'/60'/0'/0/0";
+    const xPrivKey = root.derivePath(derivePath);
+    const privateKey = xPrivKey.privateKey.toString('hex');
+    
+    // 이더리움 주소 생성
+    let address = ethUtil.pubToAddress(xPrivKey.publicKey, true).toString('hex');
+    address = ethUtil.toChecksumAddress(address).toString('hex');
 
-			wallets[coin][address] = {
-				name: '이더리움',
-				coin: 'ETH',
-				symbol: 'ETH',
-				address,
-				derivePath,
-			}
-		})();
-		
-		// 스텔라루멘 키 저장
-
-		// alert(address);
-    const wallet = {
+    const wallet = new Wallet({
       name: '이더리움',
-      coinType: 'ETH',
+      coin: 'ETH',
       symbol: 'ETH',
-      address
-		}
-
-		/*
-			wallets = {
-				'eth': {
-					address': {}
-				},
-				'btc': {
-					address': {}
-				}
-			}
-		*/
-		
-		//
+      address,
+      derivePath,
+      privateKey
+    });
+    // console.log('wallet', wallet);
 
 		// 저장(지갑 3개를 동시에 생성하고 redux로 저장하자.)
 		// 니모닉 저장, 이더리움 키저장, 비트코인 키 저장, 스텔라루멘 키 저장
 		// 그리고 앱 상태를 지갑 생성 완료로 변경하자.
-		await this._storeData(wallet, privKey);
+    // await this._storeData(wallet, privKey);
+    await this.props.storeWallet(wallet);
 
-		this.setState({
-      loading: false
-		});
+		// this.setState({
+    //   loading: false
+		// });
 
 		// this.props.navigation.goBack();
 		// this.props.navigation.popToTop();
 		// 지갑 생성이 완료되면 현재 화면을 종료하고 지갑 목록 화면으로 이동한다.
-		this.props.navigation.reset([NavigationActions.navigate({ routeName: 'Wallets' })], 0)
+		// this.props.navigation.reset([NavigationActions.navigate({ routeName: 'Wallets' })], 0)
 	}
 
   render() {
@@ -182,7 +146,7 @@ export default class CreateWalletScreen extends Component {
 						<Text>생성하기</Text>
 					</Button>
 				</View>
-				<Loader loading={this.state.loading} />
+				<LoadingView loading={this.props.busy} />
       </Container>
 		);
   }
@@ -201,3 +165,24 @@ const styles = StyleSheet.create({
 		}),
 	}
 });
+
+
+// props에 전달할 state값 정의
+const mapStateToProps = (state) => {
+  const { wallet } = state;
+	return {
+    busy: wallet.addWallet.busy,
+    error: wallet.addWallet.error,
+	}
+};
+
+// props에 전달할 액션 함수 정의
+const mapDispatchToProps = { 
+	storeWallet,
+};
+
+// 컴포넌트와 리덕스를 연결
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(CreateWalletScreen);

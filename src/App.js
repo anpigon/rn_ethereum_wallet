@@ -10,6 +10,7 @@ import ConfimTxScreen from './components/ConfimTxScreen';
 import CompleteScreen from './components/CompleteScreen';
 import ImportWalletScreen from './components/ImportWalletScreen';
 // import IntroScreen from './components/IntroScreen';
+import SettingScreen from './components/SettingScreen';
 
 const AppStackNavigator = createStackNavigator({
   // Intro: { screen: IntroScreen,  },
@@ -20,7 +21,8 @@ const AppStackNavigator = createStackNavigator({
   SendScreen: { screen: SendScreen },
   ConfimTx: { screen: ConfimTxScreen, }, //
   ImportWallet: { screen: ImportWalletScreen, },
-  CompleteScreen: { screen: CompleteScreen, navigationOptions: { title: '완료', headerLeft: null } },
+  Complete: { screen: CompleteScreen, navigationOptions: { title: '완료', headerLeft: null } },
+  Setting: { screen: SettingScreen, },
 }, 
 {
   defaultNavigationOptions: {

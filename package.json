@@ -16,7 +16,7 @@
     "base-x": "3.0.4",
     "bip32": "^1.0.2",
     "buffer": "^4.9.1",
-    "ethereumjs-util": "^6.0.0",
+    "ethereumjs-util": "6.0.0",
     "ethers": "^4.0.23",
     "events": "^1.1.1",
     "native-base": "^2.11.0",
@@ -34,8 +34,10 @@
     "readable-stream": "^1.0.33",
     "redux": "^4.0.1",
     "redux-actions": "^2.6.4",
+    "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "stream-browserify": "^1.0.0",
+    "uuid": "^3.3.2",
     "vm-browserify": "0.0.4"
   },
   "devDependencies": {

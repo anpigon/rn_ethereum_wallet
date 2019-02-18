@@ -57,7 +57,6 @@ class WalletsScreen extends Component {
     	return (
 			<>
 				<NavigationEvents
-					onWillFocus={this._onWillFocus}
 					onWillBlur={() => this.setState({ active: false })}
 				/>
 				<Container style={styles.container}>
@@ -66,7 +65,12 @@ class WalletsScreen extends Component {
 							<Title>내 지갑</Title>
 						</Body>
 						<Right>
-							<Button transparent icon small>
+							<Button 
+								transparent 
+								icon small 
+								onPress={() => {
+									this.props.navigation.navigate('Setting');
+								}}>
 								<Icon name='settings' type='MaterialCommunityIcons'/>
 							</Button>
 						</Right>
@@ -79,7 +83,7 @@ class WalletsScreen extends Component {
             :
             <Content padder>
               {
-                walletCount
+                !walletCount
                 ? 
                 <IntroView 
                   message="생성된 지갑 없음. 인트로 메세지 화면" 
@@ -93,7 +97,7 @@ class WalletsScreen extends Component {
               <View style={{ height:75 }}/>
             </Content>
           }
-					{/* <Fab 
+					<Fab 
 						direction="up" 
 						position="bottomRight" 
 						containerStyle={{ }}
@@ -113,7 +117,7 @@ class WalletsScreen extends Component {
 								}}>
 								<Icon name='wallet' type='MaterialCommunityIcons' />
 							</Button>
-					</Fab> */}
+					</Fab>
 				</Container>
 			</>
 		);
@@ -135,10 +139,12 @@ function IntroView(props) {
 }
 
 function WalletListView(props) {
+	// console.log(props.wallets)
   return Object.values(props.wallets).map(wallet => {
+		// console.log(wallet)
     return (
       <WalletComponent 
-        key={wallet.address}
+        key={wallet.id}
         wallet={wallet} 
         onPress={() => props.navigation.navigate('WalletInfo', wallet)} />
     )
