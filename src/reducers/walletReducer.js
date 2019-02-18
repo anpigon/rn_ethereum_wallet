@@ -26,25 +26,25 @@ export const loadWallets = () => {
 export const storeWallet = (wallet) => {
 	return async (dispatch, getState) => {
 		// console.log('wallet', wallet);
-		try {
-      dispatch({ type: STORE_WALLET_START });
+		dispatch({ type: STORE_WALLET_START });
 
-			// 지갑 저장
-			const wallets = await Storage.addWallet(wallet);
-			// console.log(await Storage.getWallets());
-      
-      // dispatch({ type: 'wallet/loadedWallets' });
-			dispatch({ 
-				type: STORE_WALLET_OK, 
-				payload: wallets
-			});
-		} catch (error) {
-			console.log(error);
-			dispatch({
-				type: STORE_WALLET_FAIL,
-				payload: error
-			});
-		}
+		// setTimeout(async () => {
+			try {
+				// 지갑 저장
+				const wallets = await Storage.addWallet(wallet);
+
+				dispatch({ 
+					type: STORE_WALLET_OK, 
+					payload: wallets
+				});
+			} catch (error) {
+				console.log(error);
+				dispatch({
+					type: STORE_WALLET_FAIL,
+					payload: error
+				});
+			}
+		// }, 10000)
 	}
 }
 
@@ -53,7 +53,7 @@ const initialState = {
 	loaded: false, 	// 지갑 불러오기 완료 여부
 	// busy: false,
 	// error: null,
-	walletCount: 0,	// 지갑 갯수
+	// walletCount: 0,	// 지갑 갯수
 	wallets: {},			// 지갑 데이터
 	
 	addWallet: {
@@ -66,11 +66,11 @@ const initialState = {
 export default handleActions({
   [LOADED_WALLETS]: (state, action) => {
 		let loadedWallets = action.payload;
-		let loadedWalletCount = Object.keys(loadedWallets).length;
+		// let loadedWalletCount = Object.keys(loadedWallets).length;
     return {
 			...state,
 			loaded: true,
-			walletCount: loadedWalletCount,
+			// walletCount: loadedWalletCount,
       wallets: {
         ...state.wallets,
         ...loadedWallets

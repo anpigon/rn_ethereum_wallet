@@ -1,22 +1,27 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, AsyncStorage } from 'react-native';
 import { Container, Content, Header, Card, CardItem, Body, Text, Icon, Button, Left, Right, Thumbnail, Title, List, ListItem } from 'native-base'; 
+import { connect } from 'react-redux';
 
-export default class WalletInfoScreen extends Component {
-  static navigationOptions = {
-    header: null
-	}
+class WalletInfoScreen extends Component {
+  // static navigationOptions = {
+  //   header: null
+	// }
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			wallet: []
-		}
-	}
+	// constructor(props) {
+  //   super(props);
+    
+	// 	// this.state = {
+	// 	// 	wallet: []
+	// 	// }
+	// }
 
   render() {
-    const wallet = this.props.navigation.state.params;
-    console.log('wallet', wallet);
+    // console.log('wallets', this.props.wallets);
+    const { walletId } = this.props.navigation.state.params;
+    const wallet = this.props.wallets[walletId];
+    // console.log('wallet', wallet);
+
     return (
       <Container style={styles.container}>
         <Header>
@@ -35,7 +40,8 @@ export default class WalletInfoScreen extends Component {
           <Card transparent>
             <CardItem>
               <Body style={ styles.center }>
-                <Thumbnail source={{uri: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png'}} />  
+                {/* <Thumbnail source={{uri: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png'}} />   */}
+                <Thumbnail source={require('../assets/icon/eth_64x64.png')} />  
               </Body>
             </CardItem>
             <CardItem>
@@ -121,3 +127,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   }
 });
+
+// props에 전달할 state값 정의
+const mapStateToProps = (state) => {
+  // console.log('state', state)
+	return {
+    wallets: state.wallet.wallets
+	}
+};
+
+const mapDispatchToProps = { 
+};
+
+// 컴포넌트와 리덕스를 연결
+export default connect(
+  mapStateToProps, 
+  mapDispatchToProps
+)(WalletInfoScreen);

@@ -13,6 +13,7 @@ export default class Wallet {
     this.state = '';
     this.contract = '';
     this.type = '';
+    this.network = ''
   }
 
   toObject() {

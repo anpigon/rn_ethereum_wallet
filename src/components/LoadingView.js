@@ -22,7 +22,8 @@ const Loader = props => {
       <View style={styles.modalBackground}>
         <View style={styles.activityIndicatorWrapper}>
           <Spinner
-						size="large"
+            size="large"
+            color="#5300eb"
             animating={loading} />
         </View>
       </View>
