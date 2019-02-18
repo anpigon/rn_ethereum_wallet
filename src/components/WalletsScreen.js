@@ -10,15 +10,10 @@ import { loadWallets } from '../reducers/walletReducer'
 import { ethers } from 'ethers';
 
 class WalletsScreen extends Component {
-  static navigationOptions = {
-    // headerLeft: null,
-		// title: "Ethereum Wallet",
-		// headerRight: null
-		header: null
-	}
 
 	constructor(props) {
 		super(props);
+
 		this.state = {
 			active: false,
 			wallets: []
@@ -26,8 +21,9 @@ class WalletsScreen extends Component {
 	}
 
 	componentWillMount() {
-		// AsyncStorage.removeItem('WALLETS');
+
 		this.props.loadWallets();
+
 		// let provider = ethers.getDefaultProvider('ropsten');
 		
 		// const pollingInterval = 20 * 1000;
@@ -53,21 +49,12 @@ class WalletsScreen extends Component {
 		// if(this.poller) {
 		// 	clearInterval(this.poller);
 		// }
-	}
-
-	// _onWillFocus = payload => {
-	// 	// Storage 에서 지갑 목록 가져오기 // TODO: redux로 변경 필요?
-	// 	AsyncStorage.getItem('WALLETS').then(wallets => {
-	// 		this.setState({
-	// 			wallets: JSON.parse(wallets) || [],
-	// 		})
-	// 	});
-	// }
+  }
 
   render() {
 		console.log('props', this.props);
-		const { loaded, wallets } = this.props;
-    return (
+		const { loaded, wallets, walletCount } = this.props;
+    	return (
 			<>
 				<NavigationEvents
 					onWillFocus={this._onWillFocus}
@@ -75,7 +62,6 @@ class WalletsScreen extends Component {
 				/>
 				<Container style={styles.container}>
 					<Header noLeft>
-						{/* <Left /> */}
 						<Body>
 							<Title>내 지갑</Title>
 						</Body>
@@ -85,54 +71,29 @@ class WalletsScreen extends Component {
 							</Button>
 						</Right>
 					</Header>
-					<Content padder>
-						{
-							loaded
-							?
-							(
-								Object.keys(wallets).length
-								?
-								/* 지갑이 있음 */
-								Object.values(wallets).map(wallet => {
-									return (
-										<WalletComponent 
-											key={wallet.address}
-											wallet={wallet} 
-											onPress={() => this.props.navigation.navigate('WalletInfo', wallet)} />
-									)
-								})
-								:
-								<View 
-									style={{marginTop:50, height:300, justifyContent:'space-around', alignItems:'center'}}>
-									<Icon name='google-wallet' type="FontAwesome" style={{ color:'#333', fontSize: 50 }}/>
-									<Text style={{color:'#575757', fontSize:20, marginTop:20, marginBottom: 30}}>여러분의 지갑을 만들어보세요.</Text>
-									<Button
-										first 
-										block
-										bordered
-										style={{width:220, alignSelf:'center'}}
-										onPress={() => {
-											this.props.navigation.navigate('CreateWallet')
-										}}
-									><Text>새 지갑 만들기</Text></Button>
-									<Button
-										last
-										block
-										bordered	
-										style={{width:220, alignSelf:'center'}}
-										onPress={() => {
-											this.props.navigation.navigate('ImportWallet')
-										}}
-									><Text>기존 지갑 가져오기</Text></Button>
-								</View>
-							)
-							:
-							/* 지갑 정보 불러오는 중... */
-							<Spinner color="grey"/>
-						}
-						<View style={{height:75}}/>
-					</Content>
-					<Fab 
+          {
+            !loaded
+            ? 
+            <LoadingView 
+              message="지갑 정보 불러오는 중..." /> 
+            :
+            <Content padder>
+              {
+                walletCount
+                ? 
+                <IntroView 
+                  message="생성된 지갑 없음. 인트로 메세지 화면" 
+                  navigation={this.props.navigation} />
+                : 
+                <WalletListView 
+                  message="지갑 목록 뷰" 
+                  wallets={wallets} 
+                  navigation={this.props.navigation} /> 
+              }
+              <View style={{ height:75 }}/>
+            </Content>
+          }
+					{/* <Fab 
 						direction="up" 
 						position="bottomRight" 
 						containerStyle={{ }}
@@ -152,11 +113,51 @@ class WalletsScreen extends Component {
 								}}>
 								<Icon name='wallet' type='MaterialCommunityIcons' />
 							</Button>
-					</Fab>
+					</Fab> */}
 				</Container>
 			</>
 		);
   }
+}
+
+function IntroView(props) {
+  return <View 
+    style={{ marginTop:50, height:330, justifyContent:'space-around', alignItems:'center' }}>
+    <Icon name="wallet" type='Entypo' style={{ fontSize: 100 }}/>
+    <Text style={{ color:'#575757', fontSize:20, marginTop:10, marginBottom: 30 }}>여러분의 지갑을 만들어보세요.</Text>
+    <StyledButton 
+      label='새 지갑 만들기' 
+      onPress={() => props.navigation.navigate('CreateWallet')}/>
+    <StyledButton 
+      label='기존 지갑 가져오기' 
+      onPress={() => props.navigation.navigate('ImportWallet')}/>
+  </View>
+}
+
+function WalletListView(props) {
+  return Object.values(props.wallets).map(wallet => {
+    return (
+      <WalletComponent 
+        key={wallet.address}
+        wallet={wallet} 
+        onPress={() => props.navigation.navigate('WalletInfo', wallet)} />
+    )
+  })
+}
+
+function LoadingView(props) {
+  return <View style={{ flex:1, justifyContent:'center', alignItems:'center', paddingBottom: 70 }}>
+    <Spinner color="grey"/>
+    <Text note>데이터 불러오는 중 ...</Text>
+  </View>
+}
+
+function StyledButton(props) {
+  return <Button block bordered	
+    style={{ width:220, alignSelf:'center' }}
+    onPress={props.onPress}>
+    <Text>{props.label}</Text>
+  </Button>
 }
 
 const styles = StyleSheet.create({
@@ -168,10 +169,11 @@ const styles = StyleSheet.create({
 
 // props에 전달할 state값 정의
 const mapStateToProps = (state) => {
-	const { loaded, wallets } = state.wallet;
+	const { loaded, wallets, walletCount } = state.wallet;
 	return {
 		loaded,
-		wallets
+    wallets,
+    walletCount
 	}
 };
 
