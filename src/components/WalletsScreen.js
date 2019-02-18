@@ -2,22 +2,22 @@ import React, { Component } from 'react';
 import { StyleSheet, View, AsyncStorage } from 'react-native';
 import { Container, Content, Card, CardItem, Body, Text, Icon, Button, Left, Right, Thumbnail, Fab, Header, Title, Spinner } from 'native-base'; 
 import { connect } from 'react-redux';
-import { NavigationEvents } from 'react-navigation';
+// import { NavigationEvents } from 'react-navigation';
 
 import WalletComponent from './WalletComponent';
 import { loadWallets } from '../reducers/walletReducer'
 
-import { ethers } from 'ethers';
+// import { ethers } from 'ethers';
 
 class WalletsScreen extends Component {
 
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			active: false,
-			wallets: []
-		}
+		// this.state = {
+		// 	// active: false,
+		// 	// wallets: []
+		// }
 	}
 
 	componentWillMount() {
@@ -52,27 +52,33 @@ class WalletsScreen extends Component {
   }
 
   render() {
-		console.log('props', this.props);
-		const { loaded, wallets, walletCount } = this.props;
+		// console.log('props', this.props);
+		const { loaded, wallets/*, walletCount*/ } = this.props;
     	return (
-			<>
-				<NavigationEvents
-					onWillBlur={() => this.setState({ active: false })}
-				/>
+			// <>
+			// 	<NavigationEvents
+			// 		onWillBlur={() => this.setState({ active: false })}
+			// 	/>
 				<Container style={styles.container}>
 					<Header noLeft>
 						<Body>
 							<Title>내 지갑</Title>
 						</Body>
 						<Right>
-							<Button 
+							{/* <Button 
 								transparent 
 								icon small 
 								onPress={() => {
 									this.props.navigation.navigate('Setting');
 								}}>
 								<Icon name='settings' type='MaterialCommunityIcons'/>
-							</Button>
+							</Button> */}
+							<Button 
+								transparent 
+								icon small 
+								onPress={() => {
+									this.props.navigation.navigate('CreateWallet');
+								}}><Icon name="wallet" type="AntDesign" /></Button>
 						</Right>
 					</Header>
           {
@@ -83,7 +89,7 @@ class WalletsScreen extends Component {
             :
             <Content padder>
               {
-                !walletCount
+                !Object.keys(this.props.wallets).length
                 ? 
                 <IntroView 
                   message="생성된 지갑 없음. 인트로 메세지 화면" 
@@ -97,7 +103,7 @@ class WalletsScreen extends Component {
               <View style={{ height:75 }}/>
             </Content>
           }
-					<Fab 
+					{/* <Fab 
 						direction="up" 
 						position="bottomRight" 
 						containerStyle={{ }}
@@ -117,9 +123,9 @@ class WalletsScreen extends Component {
 								}}>
 								<Icon name='wallet' type='MaterialCommunityIcons' />
 							</Button>
-					</Fab>
+					</Fab> */}
 				</Container>
-			</>
+			// </>
 		);
   }
 }
@@ -146,7 +152,7 @@ function WalletListView(props) {
       <WalletComponent 
         key={wallet.id}
         wallet={wallet} 
-        onPress={() => props.navigation.navigate('WalletInfo', wallet)} />
+        onPress={() => props.navigation.navigate('WalletInfo', { walletId: wallet.id })} />
     )
   })
 }
@@ -175,11 +181,11 @@ const styles = StyleSheet.create({
 
 // props에 전달할 state값 정의
 const mapStateToProps = (state) => {
-	const { loaded, wallets, walletCount } = state.wallet;
+	const { loaded, wallets/*, walletCount*/ } = state.wallet;
 	return {
 		loaded,
     wallets,
-    walletCount
+    // walletCount
 	}
 };
 
