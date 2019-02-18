@@ -3,16 +3,9 @@ import { AsyncStorage } from 'react-native';
 import Storage from '../storage';
 
 // 액션 타입을 정의해줍니다.
-const LOADED_WALLETS = 'wallet/loadedWallets';
-
-// 지갑 등록
 const STORE_WALLET_START = 'addWallet/storeWalletStart';
 const STORE_WALLET_OK = 'addWallet/storeWalletOk';
 const STORE_WALLET_FAIL = 'addWallet/storeWalletFail';
-
-// 액션 생성 함수를 만듭니다.
-export const _loadedWallets = createAction(LOADED_WALLETS);
-// export const _storeWalletFail = createAction(STORE_WALLET_FAIL);
 
 // Storage에서 지갑 정보를 가져온다.
 export const loadWallets = () => {
@@ -30,14 +23,11 @@ export const storeWallet = (wallet) => {
       dispatch({ type: STORE_WALLET_START });
 
 			// 지갑 저장
-			const wallets = await Storage.addWallet(wallet);
+			await Storage.addWallet(wallet);
 			// console.log(await Storage.getWallets());
       
       // dispatch({ type: 'wallet/loadedWallets' });
-			dispatch({ 
-				type: STORE_WALLET_OK, 
-				payload: wallets
-			});
+			dispatch({ type: STORE_WALLET_OK });
 		} catch (error) {
 			console.log(error);
 			dispatch({
@@ -50,62 +40,31 @@ export const storeWallet = (wallet) => {
 
 // 초기 State를 정의합니다.
 const initialState = {
-	loaded: false, 	// 지갑 불러오기 완료 여부
-	// busy: false,
-	// error: null,
-	walletCount: 0,	// 지갑 갯수
-	wallets: {},			// 지갑 데이터
-	
-	addWallet: {
-		busy: false,
-		error: null,
-	}
+    busy: false,
+    error: null,
 }
 
 // 리듀서 함수를 정의합니다.
 export default handleActions({
-  [LOADED_WALLETS]: (state, action) => {
-		let loadedWallets = action.payload;
-		let loadedWalletCount = Object.keys(loadedWallets).length;
-    return {
-			...state,
-			loaded: true,
-			walletCount: loadedWalletCount,
-      wallets: {
-        ...state.wallets,
-        ...loadedWallets
-			}
-    };
-	},
-	[STORE_WALLET_START]:  (state, action) => {
+  [STORE_WALLET_START]:  (state, action) => {
 		return {
 			...state,
-			addWallet: {
-				busy: true,
-				error: null,
-			}
+			busy: true,
+			error: null,
 		}
 	},
 	[STORE_WALLET_OK]:  (state, action) => {
 		return {
 			...state,
-			wallets: {
-        ...state.wallets,
-        ...action.payload,
-			},
-			addWallet: {
-				busy: false,
-				error: null,
-			}
+			busy: false,
+			error: null,
 		}
 	},
 	[STORE_WALLET_FAIL]:  (state, action) => {
 		return {
 			...state,
-			addWallet: {
-				busy: false,
-				error: action.payload,
-			}
+			busy: false,
+			error: action.payload,
 		}
 	},
 }, initialState);

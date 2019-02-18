@@ -4,7 +4,8 @@ import { Card, CardItem, Body, Text, Icon, Button, Left, Right, Thumbnail } from
 
 export default function WalletComponent(props) {
 	// console.log(props);
-	const wallet = props.wallet;
+  const wallet = props.wallet;
+  console.log(wallet)
 	return (
 		<TouchableOpacity onPress={props.onPress}>
 			<Card>
