@@ -29,9 +29,10 @@ export default class ReceiveScreen extends Component {
           <Card transparent>
             <CardItem>
               <Body style={ styles.center }>
-								<Thumbnail 
+								<Thumbnail source={require('../assets/icon/eth_64x64.png')} />
+								{/* <Thumbnail 
 									circle
-									source={{uri: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png'}} />  
+									source={{uri: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png'}} />   */}
               </Body>
             </CardItem>
 						<CardItem>

@@ -65,7 +65,7 @@ class CreateWalletScreen extends Component {
 		}
   }
 
-	createWallet = () => {
+	createWallet = async () => {
 
 		this.setState({ loading: true });
 
@@ -138,7 +138,7 @@ class CreateWalletScreen extends Component {
 						
 							<View style={{marginTop: 20, padding: 10}}>
 								<Text note>옵션</Text>
-								<Item picker underline={false}>
+								<Item inlineLabel picker>
 									<Label>
 										{/* <Icon name="wallet" style={{fontSize: 20,}} type="MaterialCommunityIcons" />  */}
 										지갑이름</Label>

@@ -1,6 +1,7 @@
 import { createAction, handleActions } from 'redux-actions';
-import { AsyncStorage } from 'react-native';
+// import { AsyncStorage } from 'react-native';
 import Storage from '../storage';
+import { ethers } from 'ethers';
 
 // 액션 타입을 정의해줍니다.
 const LOADED_WALLETS = 'wallet/loadedWallets';
@@ -9,6 +10,8 @@ const LOADED_WALLETS = 'wallet/loadedWallets';
 const STORE_WALLET_START = 'addWallet/storeWalletStart';
 const STORE_WALLET_OK = 'addWallet/storeWalletOk';
 const STORE_WALLET_FAIL = 'addWallet/storeWalletFail';
+
+const pollingInterval = 10 * 1000;
 
 // 액션 생성 함수를 만듭니다.
 export const _loadedWallets = createAction(LOADED_WALLETS);
@@ -19,6 +22,32 @@ export const loadWallets = () => {
 	return async (dispatch, getState) => {
 		let wallets = await Storage.getWallets();
 		dispatch(_loadedWallets(wallets));
+
+		// 잔액 조회 폴링 시작
+		clearInterval(this.poller);
+		this.poller = setInterval(async () => {
+			// console.log('Interval', getState().wallet.wallets);
+			let wallets = await getState().wallet.wallets;
+			// console.log('Interval', wallets);
+			// Object.values(wallets).forEach(w => {
+			for(let id in wallets) {
+				let w = wallets[id];
+				// console.log(w);
+				if(w) {
+					switch(w.coin) {
+						case 'ETH':
+							let provider = ethers.getDefaultProvider(w.network==='mainnet'?null:(w.network || 'ropsten'))
+							let balance = await provider.getBalance(w.address);
+							w.balance = ethers.utils.formatEther(balance);
+						break;
+					}
+				}
+			};
+			
+			// console.log(wallets)
+			dispatch(_loadedWallets(wallets));
+
+		}, pollingInterval);
 	}
 }
 
