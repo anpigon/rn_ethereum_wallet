@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 
 // 액션 타입을 정의해줍니다.
 const LOADED_WALLETS = 'wallet/loadedWallets';
+const STORE_WALLETS = 'wallet/storeWallets';
 
 // 지갑 등록
 const STORE_WALLET_START = 'addWallet/storeWalletStart';
@@ -43,9 +44,14 @@ export const loadWallets = () => {
 					}
 				}
 			};
+
+			await Storage.storeWallets(wallets);
 			
 			// console.log(wallets)
-			dispatch(_loadedWallets(wallets));
+			dispatch({
+				type: STORE_WALLETS,
+				payload: wallets
+			});
 
 		}, pollingInterval);
 	}
@@ -100,6 +106,16 @@ export default handleActions({
 			...state,
 			loaded: true,
 			// walletCount: loadedWalletCount,
+      wallets: {
+        ...state.wallets,
+        ...loadedWallets
+			}
+    };
+	},
+	[STORE_WALLETS]: (state, action) => {
+		let loadedWallets = action.payload;
+    return {
+			...state,
       wallets: {
         ...state.wallets,
         ...loadedWallets
