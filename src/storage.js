@@ -12,6 +12,10 @@ export default class Storage {
       .then(wallets => JSON.parse(wallets) || {});
   }
 
+  static storeWallets = (wallets) => {
+    return AsyncStorage.setItem(Collections.WALLETS, JSON.stringify(wallets));
+  }
+
   static addWallet = async (wallet) => {
     try {
       // 기존 지갑 목록 가져오기
@@ -23,8 +27,10 @@ export default class Storage {
       const { id, privateKey } = wallet;
 
       // 지갑 개인키 저장
-      await Storage.storeSecret(id, privateKey);
-      delete wallet['privateKey'];
+      if(privateKey) {
+        await Storage.storeSecret(id, privateKey);
+        delete wallet['privateKey'];
+      }
       
       // 지갑 저장
       wallets[id] = wallet;
