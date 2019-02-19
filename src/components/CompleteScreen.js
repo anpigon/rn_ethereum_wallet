@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Slider, TouchableOpacity, Alert, AsyncStorage, Image, BackHandler } from 'react-native';
+import { StyleSheet, View, Slider, TouchableOpacity, Alert, AsyncStorage, Image, BackHandler, Linking } from 'react-native';
 import { Container, Spinner, Content, Header, Card, CardItem, Body, Text, Icon, Button, Left, Right, Thumbnail, Title, Toast, Form, Item, Input, Label } from 'native-base'; 
 // import { ethers } from '../assets/complete.png';
 
@@ -10,14 +10,41 @@ export default function(props) {
   //   return true
   // });
 
-  const hash = props.navigation.state.params;
+  let {
+    hash,
+    network,
+    coin,
+  } = props.navigation.state.params;
+
+  function goBlockExplorer() {
+    switch(coin) {
+      case 'ETH':
+        if(network==='mainnet') {
+          Linking.openURL(`https://etherscan.io/tx/${hash}`);
+        } else {
+          Linking.openURL(`https://${network||'ropsten'}.etherscan.io/tx/${hash}`);
+        }
+      break;
+    }
+    // Linking.openURL(`https://stellar.expert/explorer/testnet/tx/${txId}`);
+  }
+
   return (
     <Container style={styles.container}>
+      <Header noLeft>
+        {/* <Left /> */}
+        <Body>
+          <Title>거래 완료</Title>
+        </Body>
+        {/* <Right /> */}
+      </Header>
       <View style={{ flex: 1, marginTop: 50 }}>
         <View style={{ alignItems:'center', justifyContent:'space-evenly', marginHorizontal: 25, height: 300 }}>
           <Icon name='checkcircle' type='AntDesign' style={{color:'#2c952c', fontSize: 150}} />
           <Text>거래가 완료되었습니다.</Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={goBlockExplorer}
+          >
             <Text note style={{ color:'#07C', textDecorationLine: 'underline' }}>{hash}</Text>
           </TouchableOpacity>
         </View>

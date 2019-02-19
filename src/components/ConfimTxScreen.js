@@ -1,27 +1,33 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Slider, TouchableOpacity, Alert, AsyncStorage, BackHandler } from 'react-native';
 import { Container, Spinner, Content, Header, Card, CardItem, Body, Text, Icon, Button, Left, Right, Thumbnail, Title, Toast, Form, Item, Input, Label } from 'native-base'; 
+import { connect } from 'react-redux';
 import { ethers } from 'ethers';
 import LoadingView from './LoadingView';
 
-import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store";
+import RNSecureKeyStore from "react-native-secure-key-store";
 
-export default class ConfimTxScreen extends Component {
-  // static navigationOptions = {
-  //   title: "출금",
-	// }
+class ConfimTxScreen extends Component {
 
 	constructor(props) {
 		super(props);
 
 		const {
-			fromAddress,
+			// fromAddress,
 			toAddress,
 			gasPrice,
 			gasLimit,
-			value
+			value,
+			walletId,
 		} = props.navigation.state.params;
-		console.log('params', props.navigation.state.params);
+		// console.log('params', props.navigation.state.params);
+
+    let wallet;
+    try {
+      wallet = this.props.wallets[walletId];
+    } catch(err) {
+      console.log(err);
+    }
 
 		// 수수료 계산
 		let estimateFee = ethers.utils.bigNumberify(gasPrice).mul(gasLimit);
@@ -34,14 +40,19 @@ export default class ConfimTxScreen extends Component {
 
 		this.state = {
 			loading: false,
-			fromAddress,
+			// fromAddress,
 			toAddress,
 			gasPrice,
 			gasLimit,
 			value,
 			fee,
 			totalAmount,
+			wallet,
 		}
+	}
+
+	componentWillUnmount() {
+		this.setState({ loading: false });
 	}
 
 	sign = async () => {
@@ -51,7 +62,7 @@ export default class ConfimTxScreen extends Component {
 		});
 
 		let { 
-			fromAddress, 
+			wallet,
 			toAddress,
 			gasPrice,
 			gasLimit,
@@ -59,10 +70,10 @@ export default class ConfimTxScreen extends Component {
 		} = this.state;
 
 		// #1. provider 생성
-		let provider = ethers.getDefaultProvider('ropsten');
+		let provider = ethers.getDefaultProvider(wallet.network==='mainnet'?null:(wallet.network || 'ropsten'));
 
 		// #2. nonce 값 조회
-		let nonce = await provider.getTransactionCount(fromAddress);
+		let nonce = await provider.getTransactionCount(wallet.address);
 		console.log({ nonce });
 
 		// #3 .TX 생성
@@ -77,15 +88,15 @@ export default class ConfimTxScreen extends Component {
 		console.log({ transaction });
 
 		// #4. 키 조회
-		let privateKey = await RNSecureKeyStore.get(fromAddress); // .toString('hex')
+		let privateKey = await RNSecureKeyStore.get(wallet.id); // .toString('hex')
 		console.log({ privateKey });
 
 		// #5. 지갑 생성
-		let wallet = new ethers.Wallet(privateKey);
-		console.log(wallet.address)
+		let ethWallet = new ethers.Wallet(privateKey);
+		console.log(ethWallet.address)
 		
 		// #6. 이더리움 서명
-		let sign = await wallet.sign(transaction);
+		let sign = await ethWallet.sign(transaction);
 		console.log('sign: ' + sign);
 
 		// #7. 이더리움 TX 배포
@@ -96,7 +107,12 @@ export default class ConfimTxScreen extends Component {
 
 			// #8. TxId 화면으로 이동
 			// this.props.navigation.navigate('CompleteScreen', tx.hash);
-			this.props.navigation.replace('Complete', tx.hash);
+			this.props.navigation.navigate('Complete', {
+				hash: tx.hash,
+				walletId: wallet.id,
+				network: wallet.network,
+				coin: wallet.coin,
+			});
 
 		} catch(error) {
 			console.log(error);
@@ -113,7 +129,19 @@ export default class ConfimTxScreen extends Component {
 
     return (
       <Container style={styles.container}>
-				<View>
+				<Header>
+          <Left>
+						<Button transparent
+							onPress={() => this.props.navigation.goBack()}>
+							<Icon name="arrow-back" />
+						</Button>
+					</Left>
+          <Body>
+						<Title>서명</Title>
+					</Body>
+          <Right />
+        </Header>
+				<Content>
 					<View style={{ padding: 20, backgroundColor: '#F9FAFA', alignItems:'center', borderBottomColor: '#D2D8DD', borderBottomWidth: 1 }}>
 						<Text note>출금 금액</Text>
 						<Text style={{ fontSize: 30, fontWeight: '600', marginBottom: 20}}>{state.value} ETH</Text>
@@ -137,7 +165,7 @@ export default class ConfimTxScreen extends Component {
 						<Text style={styles.hintText}>‧ 위 거래내용을 확인하시기 바랍니다.</Text>
 						<Text style={styles.hintText}>‧ 아래 승인버튼을 선택하시면 계속해서 거래를 진행합니다.</Text>
 					</View>
-				</View>
+				</Content>
 				<View style={{ marginHorizontal: 10, marginBottom: 30 }}>
 					<Button block
 						disabled={false}
@@ -169,3 +197,20 @@ const styles = StyleSheet.create({
 		color: '#4d4d4d'
 	}
 });
+
+// props에 전달할 state값 정의
+const mapStateToProps = (state) => {
+  // console.log('state', state)
+	return {
+    wallets: state.wallet.wallets
+	}
+};
+
+const mapDispatchToProps = { 
+};
+
+// 컴포넌트와 리덕스를 연결
+export default connect(
+  mapStateToProps, 
+  mapDispatchToProps
+)(ConfimTxScreen);

@@ -8,19 +8,25 @@ class WalletInfoScreen extends Component {
   //   header: null
 	// }
 
-	// constructor(props) {
-  //   super(props);
+	constructor(props) {
+    super(props);
+
+    const { walletId } = this.props.navigation.state.params;
     
-	// 	// this.state = {
-	// 	// 	wallet: []
-	// 	// }
-	// }
+    let wallet;
+    try {
+      wallet = this.props.wallets[walletId];
+    } catch(err) {
+      console.log(err);
+    }
+    
+		this.state = {
+			wallet
+		}
+	}
 
   render() {
-    // console.log('wallets', this.props.wallets);
-    const { walletId } = this.props.navigation.state.params;
-    const wallet = this.props.wallets[walletId];
-    // console.log('wallet', wallet);
+    const { wallet } = this.state;
 
     return (
       <Container style={styles.container}>
@@ -67,7 +73,7 @@ class WalletInfoScreen extends Component {
                   onPress={() => this.props.navigation.navigate('ReceiveScreen', wallet)}
                   bordered info style={{flex:1, justifyContent:'center', marginRight: 10}}><Text>입금</Text></Button>
                 <Button 
-                  onPress={() => this.props.navigation.navigate('SendScreen', wallet)}
+                  onPress={() => this.props.navigation.navigate('SendScreen', { walletId: wallet.id })}
                   bordered warning style={{flex:1, justifyContent:'center', marginLeft: 10}}><Text>출금</Text></Button>
               </Body>
             </CardItem>

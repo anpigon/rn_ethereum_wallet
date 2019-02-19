@@ -31,7 +31,7 @@ export default function WalletComponent(props) {
 						</Button>
 					</Right>
 				</CardItem>
-				<CardItem style={{ height:10, marginVertical: -5 }}>
+				<CardItem style={{ marginVertical: -5 }}>
 					<Text note ellipsizeMode="middle" numberOfLines={1}>{wallet.address}</Text>
 				</CardItem>
 				<CardItem>

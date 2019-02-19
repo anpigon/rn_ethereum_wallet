@@ -1,38 +1,49 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Slider, TouchableOpacity, Alert } from 'react-native';
 import { Container, Content, Header, Card, CardItem, Body, Text, Icon, Button, Left, Right, Thumbnail, Title, Toast, Form, Item, Input, Label } from 'native-base'; 
+import { connect } from 'react-redux';
 import { ethers } from 'ethers';
 
-export default class ReceiveScreen extends Component {
-  static navigationOptions = {
-    header: null
-	}
+import * as ethUtil from '../utils/ethUtil';
+
+/**
+ * 출금 입력 화면
+ */
+class ReceiveScreen extends Component {
 
 	constructor(props) {
 		super(props);
 
-		const wallet = props.navigation.state.params
+		const { walletId } = this.props.navigation.state.params;
+    
+    let wallet;
+    try {
+      wallet = this.props.wallets[walletId];
+    } catch(err) {
+      console.log(err);
+    }
 
 		this.state = {
-			fromAddress: wallet.address,
-			toAddress:'',
-			gasPrice: '2',
-			gasLimit: '21000',
-			value: '',
-			isReady: false,
+			isReady: false,			// 
+			// fromAddress: wallet.address, // 지갑 주소
+			toAddress:'',				// 받는 사람 주소
+			gasPrice: '2',			// 가스 가격
+			gasLimit: '21000',	// 가스 최대 사용량
+			value: '',					// 보내는 금액
 			wallet,
 		}
 	}
 
-	checkAddress = (address) => {
-		if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
-			return false;
-		}
-		// else if (/^(0x|0X)?[0-9a-f]{40}$/.test(address) || /^(0x|0X)?[0-9A-F]{40}$/.test(address)) {
-		// 	return true;
-		// }
-		return true;
-	};
+	// 이더리움 주소 체크
+	// checkAddress = (address) => {
+	// 	if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
+	// 		return false;
+	// 	}
+	// 	// else if (/^(0x|0X)?[0-9a-f]{40}$/.test(address) || /^(0x|0X)?[0-9A-F]{40}$/.test(address)) {
+	// 	// 	return true;
+	// 	// }
+	// 	return true;
+	// };
 
 	next = () => {
 		let ehter = 0;
@@ -59,7 +70,7 @@ export default class ReceiveScreen extends Component {
 		}
 
 		try {
-			if(!this.checkAddress(this.state.toAddress)) {
+			if(!ethUtil.checkAddress(this.state.toAddress)) {
 				return Alert.alert('', '받는 주소를 확인해주세요.');
 			}
 		} catch(e) {
@@ -68,20 +79,15 @@ export default class ReceiveScreen extends Component {
 		}
 		// Alert.alert('ok');
 
-		let {
-			fromAddress,
-			toAddress,
-			gasPrice,
-			gasLimit,
-			value,
-		} = this.state;
 		let transcation = {
-			fromAddress,
-			toAddress,
-			gasPrice,
-			gasLimit,
-			value
+			fromAddress: this.state.fromAddress,
+			toAddress: this.state.toAddress,
+			gasPrice: this.state.gasPrice,
+			gasLimit: this.state.gasLimit,
+			value: this.state.value,
+			walletId: this.state.wallet.id,
 		};
+
 		this.props.navigation.navigate('ConfimTx', transcation);
 	}
 
@@ -211,3 +217,20 @@ const styles = StyleSheet.create({
 		color: '#555'
 	}
 });
+
+// props에 전달할 state값 정의
+const mapStateToProps = (state) => {
+  // console.log('state', state)
+	return {
+    wallets: state.wallet.wallets
+	}
+};
+
+const mapDispatchToProps = { 
+};
+
+// 컴포넌트와 리덕스를 연결
+export default connect(
+  mapStateToProps, 
+  mapDispatchToProps
+)(ReceiveScreen);
