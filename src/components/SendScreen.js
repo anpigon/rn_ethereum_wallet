@@ -25,25 +25,29 @@ class ReceiveScreen extends Component {
 
 		this.state = {
 			isReady: false,			// 
-			// fromAddress: wallet.address, // 지갑 주소
 			toAddress:'',				// 받는 사람 주소
 			gasPrice: '2',			// 가스 가격
 			gasLimit: '21000',	// 가스 최대 사용량
 			value: '',					// 보내는 금액
 			wallet,
+			gasMinValue: 1.0,
+			gasMaxValue: 10.0,
 		}
 	}
 
-	// 이더리움 주소 체크
-	// checkAddress = (address) => {
-	// 	if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
-	// 		return false;
-	// 	}
-	// 	// else if (/^(0x|0X)?[0-9a-f]{40}$/.test(address) || /^(0x|0X)?[0-9A-F]{40}$/.test(address)) {
-	// 	// 	return true;
-	// 	// }
-	// 	return true;
-	// };
+	componentWillMount() {
+		fetch('https://www.etherchain.org/api/gasPriceOracle')
+		.then(r => r.json())
+		.then(r => {
+			console.log(r);
+			this.setState({
+				isReady: true,
+				gasPrice: parseFloat(r.standard).toFixed(1),
+				gasMinValue: parseFloat(r.safeLow).toFixed(1),
+				gasMaxValue: parseFloat(r.fastest).toFixed(1),
+			})
+		});
+	}
 
 	next = () => {
 		let ehter = 0;
@@ -91,14 +95,6 @@ class ReceiveScreen extends Component {
 		this.props.navigation.navigate('ConfimTx', transcation);
 	}
 
-	// componentWillUpdate() {
-	// 	if(this.state.fromAddress && this.state.value) {
-	// 		// this.setState({ isReady: true })
-	// 	} else {
-	// 		// this.setState({ isReady: false })
-	// 	}
-	// }
-
   render() {
 		const wallet = this.state.wallet;
 
@@ -143,12 +139,13 @@ class ReceiveScreen extends Component {
 						</Item>
 					</View>
 					<View style={styles.item}>
-						<Text style={styles.label}>가스 수수료</Text>
+						<Text style={styles.label}>수수료<Text note>(가스 가격)</Text></Text>
 						<Slider 
+							disabled={!this.state.isReady}
 							value={parseFloat(this.state.gasPrice) || 0} 
 							onValueChange={gasPrice => this.setState({ gasPrice: gasPrice.toFixed(1) })}
-							maximumValue={7} 
-							minimumValue={1.1} 
+							maximumValue={parseFloat(this.state.gasMaxValue)} 
+							minimumValue={parseFloat(this.state.gasMinValue)} 
 							step={0.1} 
 							minimumTrackTintColor="orangered"
 							maximumTrackTintColor="royalblue"/>
@@ -180,7 +177,7 @@ class ReceiveScreen extends Component {
 					</Card>
 					<View style={styles.item}>
 						<Button block 
-							// disabled={!this.state.isReady}
+							disabled={!this.state.isReady}
 							onPress={this.next}>
 							<Text>확인</Text>
 						</Button>
