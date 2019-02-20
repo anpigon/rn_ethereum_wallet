@@ -45,6 +45,7 @@ export const loadWallets = () => {
 				}
 			};
 
+			// 지갑 정보 저장
 			await Storage.storeWallets(wallets);
 			
 			// console.log(wallets)

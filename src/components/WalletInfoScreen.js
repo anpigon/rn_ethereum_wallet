@@ -19,14 +19,17 @@ class WalletInfoScreen extends Component {
     } catch(err) {
       console.log(err);
     }
+
+    const network = (!wallet.network || wallet.network==='mainnet')?null:` [${wallet.network.slice(0,1).toUpperCase()}${wallet.network.slice(1)} Testnet]`;
     
 		this.state = {
-			wallet
+      wallet,
+      network
 		}
 	}
 
   render() {
-    const { wallet } = this.state;
+    const { wallet, network } = this.state;
 
     return (
       <Container style={styles.container}>
@@ -38,7 +41,7 @@ class WalletInfoScreen extends Component {
 						</Button>
 					</Left>
           <Body>
-						<Title>{ wallet.name }</Title>
+						<Title>{ wallet.name } <Text note>{network}</Text></Title>
 					</Body>
           <Right />
         </Header>
@@ -55,9 +58,9 @@ class WalletInfoScreen extends Component {
                 <Text style={{fontSize: 26, fontWeight:'600', marginTop: 10}}>
                   { wallet.balance || '0.00' } { wallet.symbol }
                 </Text>
-                <Text style={{fontSize: 18, marginTop: 10, color:'gray'}}>
+                {/* <Text style={{fontSize: 18, marginTop: 10, color:'gray'}}>
                   ≈ ￦ {wallet.convertPrice || '0.00'}
-                </Text> 
+                </Text>  */}
               </Body>
             </CardItem>
             <CardItem>

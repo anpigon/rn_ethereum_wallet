@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 import WalletComponent from './WalletComponent';
 import { loadWallets } from '../reducers/walletReducer'
 
+const icon = require('../assets/icon/eth_32x32.png');
+
 // import { ethers } from 'ethers';
 
 class WalletsScreen extends Component {
@@ -62,7 +64,7 @@ class WalletsScreen extends Component {
 				<Container style={styles.container}>
 					<Header noLeft>
 						<Body>
-							<Title>내 지갑</Title>
+							<Title>내 이더리움 지갑</Title>
 						</Body>
 						<Right>
 							{/* <Button 
@@ -151,7 +153,8 @@ function WalletListView(props) {
     return (
       <WalletComponent 
         key={wallet.id}
-        wallet={wallet} 
+				wallet={wallet} 
+				icon={icon}
         onPress={() => props.navigation.navigate('WalletInfo', { walletId: wallet.id })} />
     )
   })
