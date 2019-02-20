@@ -63,39 +63,41 @@ class CreateWalletScreen extends Component {
 				this.props.navigation.reset([NavigationActions.navigate({ routeName: 'Wallets' })], 0)
 			}
 		}
-  }
+	}
+	
+	componentWillUnmount() {
+		this.setState({ loading: false });
+	}
 
-	createWallet = async () => {
+	createWallet = () => {
 
-		this.setState({ loading: true });
+		this.setState({ loading: true }, () => {
+			// 마스터 키 생성
+			const seed = bip39.mnemonicToSeed(this.state.mnemonic);
+			const root = bip32.fromSeed(seed);
 
-		// 마스터 키 생성
-		const seed = bip39.mnemonicToSeed(this.state.mnemonic);
-		const root = bip32.fromSeed(seed);
+			// 이더리움 차일드 개인키 생성
+			const derivePath = "m/44'/60'/0'/0/0";
+			const xPrivKey = root.derivePath(derivePath);
+			const privateKey = xPrivKey.privateKey.toString('hex');
 
-		// 이더리움 차일드 개인키 생성
-    const derivePath = "m/44'/60'/0'/0/0";
-    const xPrivKey = root.derivePath(derivePath);
-    const privateKey = xPrivKey.privateKey.toString('hex');
-    
-    // 이더리움 주소 생성
-    let address = ethUtil.pubToAddress(xPrivKey.publicKey, true).toString('hex');
-    address = ethUtil.toChecksumAddress(address).toString('hex');
+			// 이더리움 주소 생성
+			let address = ethUtil.pubToAddress(xPrivKey.publicKey, true).toString('hex');
+			address = ethUtil.toChecksumAddress(address).toString('hex');
 
-    const wallet = new Wallet({
-      name: this.state.walletName,
-			network: this.state.network,
-      coin: 'ETH',
-      symbol: 'ETH',
-      address,
-      derivePath,
-			privateKey,
-    });
+			const wallet = new Wallet({
+				name: this.state.walletName,
+				network: this.state.network,
+				coin: 'ETH',
+				symbol: 'ETH',
+				address,
+				derivePath,
+				privateKey,
+			});
 
-		setTimeout(() => {
 			// 지갑 저장
 			this.props.storeWallet(wallet);
-		}, 100);
+		});
 	}
 
   render() {
