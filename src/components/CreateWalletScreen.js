@@ -52,7 +52,7 @@ class CreateWalletScreen extends Component {
   }
   
   componentWillReceiveProps(nextProps) {
-		if(!nextProps.busy) {
+		if(!nextProps.busy && this.state.loading ) {
 
 			this.setState({ loading: false });
 
@@ -84,11 +84,12 @@ class CreateWalletScreen extends Component {
 
     const wallet = new Wallet({
       name: this.state.walletName,
+			network: this.state.network,
       coin: 'ETH',
       symbol: 'ETH',
       address,
       derivePath,
-      privateKey
+			privateKey,
     });
 
 		setTimeout(() => {
