@@ -3,14 +3,17 @@ import { StyleSheet, View, Clipboard, Share } from 'react-native';
 import { Container, Content, Header, Card, CardItem, Body, Text, Icon, Button, Left, Right, Thumbnail, Title, Toast } from 'native-base'; 
 import QRCode from 'react-native-qrcode';
 
+// let icon = require('../assets/icon/eth_64x64.png');
+
 export default class ReceiveScreen extends Component {
+
   static navigationOptions = {
     header: null
 	}
 
   render() {
     const wallet = this.props.navigation.state.params;
-    console.log('wallet', wallet);
+    // console.log('wallet', wallet);
     return (
       <Container style={styles.container}>
         <Header>
@@ -26,21 +29,18 @@ export default class ReceiveScreen extends Component {
           <Right />
         </Header>
         <Content padder>
-          <Card transparent>
-            <CardItem>
-              <Body style={ styles.center }>
-								<Thumbnail source={require('../assets/icon/eth_64x64.png')} />
-								{/* <Thumbnail 
-									circle
-									source={{uri: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png'}} />   */}
-              </Body>
-            </CardItem>
+					<Card transparent>
+						{/* <CardItem>
+							<Body style={ styles.center }>
+								<Thumbnail source={icon} />
+							</Body>
+						</CardItem> */}
 						<CardItem>
 							<Body style={[styles.center, {marginVertical: 20}]}>
 								<QRCode
 									value={wallet.address}
 									bgColor='black'
-          				fgColor='white'
+									fgColor='white'
 									size={200}
 								/>
 							</Body>
@@ -62,8 +62,8 @@ export default class ReceiveScreen extends Component {
 								</Text>
 							</Body>
 						</CardItem>
-            <CardItem>
-              <Body>
+						<CardItem>
+							<Body>
 								<Button bordered info block
 									style={{marginHorizontal:100}}
 									onPress={() => {
@@ -71,9 +71,9 @@ export default class ReceiveScreen extends Component {
 											message: wallet.address
 										});
 									}}><Text>주소 공유</Text></Button>
-              </Body>
-            </CardItem>
-          </Card>
+							</Body>
+						</CardItem>
+					</Card>
         </Content>
       </Container>
 		);

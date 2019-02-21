@@ -6,6 +6,7 @@
     "ios": "react-native run-ios",
     "android": "react-native run-android",
     "start": "node node_modules/react-native/local-cli/cli.js start",
+    "build-android": "cd android && ./gradlew assembleRelease",
     "test": "jest",
     "postinstall": "./node_modules/.bin/rn-nodeify --hack --install buffer,crypto,events,stream,vm,process"
   },

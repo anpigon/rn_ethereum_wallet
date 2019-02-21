@@ -24,7 +24,7 @@ class InrtoScreen extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		console.log('componentWillReceiveProps', this.props, nextProps);
+		// console.log('componentWillReceiveProps', this.props, nextProps);
 		const { loaded, walletCount } = nextProps;
 		if( loaded === true ) {
 			if( walletCount > 0 ) {

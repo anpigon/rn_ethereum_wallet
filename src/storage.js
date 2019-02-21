@@ -38,7 +38,7 @@ export default class Storage {
       // console.log('wallets', JSON.stringify(wallets));
       return wallets;
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       throw error;
     }
   }
