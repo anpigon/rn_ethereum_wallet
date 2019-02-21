@@ -74,7 +74,7 @@ export const storeWallet = (wallet) => {
 					payload: wallets
 				});
 			} catch (error) {
-				console.log(error);
+				// console.log(error);
 				dispatch({
 					type: STORE_WALLET_FAIL,
 					payload: error

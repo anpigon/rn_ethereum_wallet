@@ -20,7 +20,7 @@ class ReceiveScreen extends Component {
     try {
       wallet = this.props.wallets[walletId];
     } catch(err) {
-      console.log(err);
+      // console.log(err);
     }
 
 		this.state = {
@@ -39,7 +39,7 @@ class ReceiveScreen extends Component {
 		fetch('https://www.etherchain.org/api/gasPriceOracle')
 		.then(r => r.json())
 		.then(r => {
-			console.log(r);
+			// console.log(r);
 			this.setState({
 				isReady: true,
 				gasPrice: parseFloat(r.standard).toFixed(1),
@@ -64,7 +64,7 @@ class ReceiveScreen extends Component {
 			let totalRequiredAmount = ehter.add(estimateFee);
 
 			let balance = ethers.utils.parseEther(this.state.wallet.balance);
-			console.log('balance' + balance);
+			// console.log('balance' + balance);
 			if(balance.lt(totalRequiredAmount)) {
 				let totalRequiredEther = ethers.utils.formatEther(totalRequiredAmount);
 				return Alert.alert('잔액이 부족합니다.', `수수료 포함하여 필요한 금액\n${totalRequiredEther} ETH`);
@@ -78,7 +78,7 @@ class ReceiveScreen extends Component {
 				return Alert.alert('', '받는 주소를 확인해주세요.');
 			}
 		} catch(e) {
-			console.log(e);
+			// console.log(e);
 			return Alert.alert('', '받는 주소를 확인해주세요.');
 		}
 		// Alert.alert('ok');
